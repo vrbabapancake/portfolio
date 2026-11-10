@@ -1,68 +1,72 @@
-# Mark's design system
+# Mark's Site design system: "Sketchbook"
 
-One look across Mark's Site, 6Clues and Pub Quizzes: flat, neutral and green.
-The tokens live in [`static/css/tokens.css`](static/css/tokens.css), the same file 6Clues
-and Pub Quizzes use. Copy it into a project and build on the variables. Don't hard-code colours.
+Slate teal and lilac on a light cream page, plum-black ink, thin line-art outlines and
+grid-paper detail, like a designer's wireframe sketchbook. Flat: no gradient fills and no
+blurry glows.
+
+- Tokens: [`static/css/tokens.css`](static/css/tokens.css)
+- Components: [`static/css/site.css`](static/css/site.css), loaded after each layout's inline styles
+
+6Clues and Pub Quizzes still use the earlier green tokens. Copy these two files over when
+they move to this look.
 
 ## Principles
 
-1. **No gradients, glows or purple.** Solid fills only, including headings, buttons and progress bars.
-2. **Green carries the brand.** Deep green for buttons, links, headings and progress.
-   Brass (`--highlight`) is the only second colour, and it's saved for winners and special moments.
-3. **Neutral, not biscuit.** A crisp off-white with a faint green-grey cast, white cards and green-black ink. Avoid beige or cream backgrounds, which read as AI-tool branding.
-4. **Borders over shadows.** Cards get a 1px border and a faint shadow. No big floating drop shadows.
-5. **Modest corners.** 14px cards, 10px buttons, 8px tiles. Pills (999px) only for chips and toggles.
-6. **System fonts.** `--font` is the native UI stack, heavy weights (800–900) for headings and labels.
+1. **Line art over shadows.** Cards, buttons, frames and icon tiles get a 1.5px ink outline (`--line`).
+   Depth comes from a *hard* offset lilac block (`--shadow-hover`), never a blur.
+2. **Teal is the brand, lilac is the accent.** Teal for the hero band, buttons and links.
+   Lilac for shapes behind things, icon tiles, the featured card and hover blocks.
+3. **Text on lilac is always dark plum** (`--on-lilac`), in both themes.
+4. **Two typefaces.** Figtree (geometric sans, 700–800) for headings, navigation and buttons.
+   Bitter (sturdy serif, 400) for reading text. Both are loaded from Google Fonts.
+5. **Wireframe motifs.** "Browser window" frames (title bar + three dots), grid paper and
+   rounded lilac blocks offset behind content. Use them sparingly: the hero, plus one per page at most.
+6. **Cream, not beige.** The page is a light, slightly pink cream (`#f6f1ea`) that only works
+   next to the teal and lilac. Don't pair it with tan or brown.
 
 ## Tokens
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| `--bg` | `#f4f6f5` | `#111713` | Page background |
-| `--card` | `#ffffff` | `#1a221d` | Cards, buttons, panels |
-| `--text` | `#18211c` | `#e6ebe5` | Body text and headings |
-| `--muted` | `#4a564e` | `#b1bbb3` | Secondary text, eyebrows |
-| `--card-muted` | `#56625a` | `#a7b2aa` | Secondary text on cards, placeholders |
-| `--border` | `#dde3e0` | `#2c3830` | Decorative dividers only |
-| `--field-border` | `#7b847d` | `#6e7b72` | Input outlines (must stay 3:1) |
-| `--accent` | `#1e6b45` | `#5cb983` | Focus ring, dots, timers, hover borders |
-| `--accent-strong` | `#1a5f3d` | `#22754a` | Primary button fill (white text) |
-| `--accent-strong-hover` | `#144a2f` | `#1b643f` | Primary button hover |
-| `--accent-text` | `#185a3a` | `#7fd1a2` | Green text: links, brand headings, points |
-| `--icon-bg` | `#e2ede4` | `#203a2b` | Pale green chips, selected rows, icon tiles |
-| `--ring` | green 28% | green 35% | Focus glow around inputs |
-| `--highlight` / `--highlight-text` | `#f4dd9a` / `#3d2f05` | `#4a3d12` / `#f6e3a6` | Winner row, special callouts |
-| `--success` / `--success-bg` | `#1d6b3a` / `#e5f1e7` | `#6fcf93` / `#18301f` | Correct, saved |
-| `--danger` / `--danger-bg` | `#b3261e` / `#fbeceb` | `#f28b82` / `#3a1c1a` | Errors, delete |
+| `--bg` | `#f6f1ea` | `#15232a` | Page |
+| `--card` | `#ffffff` | `#1d2f37` | Cards, buttons, frames |
+| `--text` | `#26132a` | `#f6f1ea` | Ink: body and headings |
+| `--muted` | `#55455a` | `#c6bccb` | Secondary text |
+| `--line` | `#26132a` | `#c6bccb` | Line-art outlines |
+| `--border` | ink 16% | cream 16% | Quiet dividers only |
+| `--field-border` | `#7d6f80` | `#8a9aa1` | Inputs (3:1) |
+| `--grid` | ink 10% | cream 8% | Grid-paper lines |
+| `--band` / `--on-band` | `#36677a` / `#f6f1ea` | `#2c5566` / `#f6f1ea` | Hero band and its text |
+| `--accent` | `#36677a` | `#8cc3d6` | Focus ring, small UI |
+| `--accent-strong` (+ `-hover`) | `#2c5566` | `#2c5566` | Primary button fill, white text |
+| `--accent-text` | `#2f5d6e` | `#9fd0e1` | Links and teal text |
+| `--lilac` | `#f3cdf7` | `#e9b6ee` | Shapes, icon tiles, hover blocks |
+| `--lilac-soft` | `#f8e4fa` | `#3a2840` | Featured card fill |
+| `--lilac-text` | `#6b2d73` | `#f0c8f4` | Lilac-toned text |
+| `--on-lilac` | `#26132a` | `#26132a` | Text and icons on lilac |
+| `--shadow-hover` / `--shadow` | 6px / 8px lilac offset | 6px / 8px `#6b4a72` offset | Hover lift, embeds |
+| `--radius` / `--radius-button` / `--radius-feature` | 10 / 8 / 24px | | Cards / buttons / lilac blocks |
+| `--font-display` / `--font-body` | Figtree / Bitter | | Headings & UI / reading |
 
-Dark mode is the `html.dark` class (set by `theme.js` from the toggle or the system setting).
+Dark mode is the `html.dark` class, set before paint by the inline script in each layout.
 
 ## Common patterns
 
 ```css
+.card       { border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.card:hover { transform: translate(-3px, -3px); box-shadow: var(--shadow-hover); }
 .btn-primary { background: var(--accent-strong); color: #fff; border-radius: var(--radius-button); }
-.btn-primary:hover { background: var(--accent-strong-hover); }
-.brand-text { color: var(--accent-text); }            /* replaces old gradient headings */
-.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-card); }
-.field { border: 1px solid var(--field-border); }
-.field:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+.btn:hover  { background: var(--lilac); color: var(--on-lilac); }
+.icon-tile  { background: var(--lilac); color: var(--on-lilac); border: 1.5px solid var(--line); }
+.band       { background: var(--band); color: var(--on-band); }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-.feature { border-left: 6px solid var(--accent); }    /* emphasis without a gradient wash */
 ```
 
-In dark mode, text on `--success` and `--danger` fills switches to dark (`#052e16`, `#450a0a`), because those fills turn light.
+Grid paper is an inline SVG pattern (see `.profile-wrap` in `site.css`), not a CSS gradient.
 
 ## Accessibility (WCAG 2.1 AA)
 
-- Every text/background pair above is at least **4.5:1** in both themes; most are 6:1 or higher.
-- Input borders, focus rings and progress marks are at least **3:1** against their background.
-- Status is never shown by colour alone: correct and wrong always carry ✓ / ✗ or words.
-- Keep visible focus outlines and don't remove `:focus-visible`.
-- When you change a colour, recheck its contrast (e.g. webaim.org/resources/contrastchecker).
-
-## How Mark's Site uses it
-
-Both layouts (`layouts/index.html`, `layouts/_default/list.html`) link `{{ "css/tokens.css" | relURL }}`
-and keep only site-specific extras (`--topbar`, `--shadow-soft`) inline. Dark mode is the `html.dark`
-class, set before paint by the inline script in each layout. Buttons inside content pages
-(e.g. `content/programming/_index.md`) use `var(--accent-strong)` too.
+- All text pairs are at least 4.5:1 in both themes (most 7:1+). Cream on the teal band is 5.5:1 (light) and 7.2:1 (dark).
+- Outlines, input borders and focus rings are at least 3:1.
+- Status is never colour alone. Keep `:focus-visible` outlines.
+- Recheck contrast whenever a colour changes.

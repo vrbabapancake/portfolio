@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=1600">
 <title>What I do at PagerDuty</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700;800;900&display=swap">
 <script src="./support.js"></script>
 <script>
   // Match the site's light/dark theme. Embedded: follow the parent page's
@@ -31,26 +32,26 @@
 <style>
 body{margin:0}
 :root{
---g-bg:#f4f6f5; --g-text:#18211c; --g-muted:#4a564e;
---g-card:#ffffff; --g-card-muted:#56625a; --g-border:#dde3e0;
---g-line:#7b847d; --g-icon-bg:#e2ede4; --g-accent:#1e6b45;
---g-panel:rgba(30,107,69,.06); --g-panel-border:rgba(30,107,69,.35);
---g-link:#185a3a; --g-link-hover:#144a2f;
---g-shadow:0 1px 2px rgba(24,33,28,.06); --g-shadow-on:0 4px 12px rgba(24,33,28,.10); --g-shadow-hero:0 8px 24px rgba(24,33,28,.14);
+--g-bg:#f6f1ea; --g-text:#26132a; --g-muted:#55455a;
+--g-card:#ffffff; --g-card-muted:#55455a; --g-border:#26132a;
+--g-line:#7d6f80; --g-icon-bg:#f3cdf7; --g-accent:#36677a;
+--g-panel:#f8e4fa; --g-panel-border:#26132a;
+--g-link:#2f5d6e; --g-link-hover:#234553;
+--g-shadow:none; --g-shadow-on:6px 6px 0 #f3cdf7; --g-shadow-hero:8px 8px 0 #f3cdf7;
 }
 html.dark{
---g-bg:#111713; --g-text:#e6ebe5; --g-muted:#b1bbb3;
---g-card:#1a221d; --g-card-muted:#a7b2aa; --g-border:#2c3830;
---g-line:#6e7b72; --g-icon-bg:#203a2b; --g-accent:#5cb983;
---g-panel:rgba(92,185,131,.10); --g-panel-border:rgba(92,185,131,.40);
---g-link:#7fd1a2; --g-link-hover:#a6e2bf;
---g-shadow:0 1px 2px rgba(0,0,0,.30); --g-shadow-on:0 4px 12px rgba(0,0,0,.40); --g-shadow-hero:0 8px 24px rgba(0,0,0,.50);
+--g-bg:#15232a; --g-text:#f6f1ea; --g-muted:#c6bccb;
+--g-card:#1d2f37; --g-card-muted:#c6bccb; --g-border:#c6bccb;
+--g-line:#8a9aa1; --g-icon-bg:#3a2840; --g-accent:#8cc3d6;
+--g-panel:#3a2840; --g-panel-border:#c6bccb;
+--g-link:#9fd0e1; --g-link-hover:#c4e4ef;
+--g-shadow:none; --g-shadow-on:6px 6px 0 #6b4a72; --g-shadow-hero:8px 8px 0 #6b4a72;
 }
 html,body{background:var(--g-bg)}
 a{color:var(--g-link)}a:hover{color:var(--g-link-hover)}
 </style>
 </helmet>
-<div style="position: relative; width: 1600px; height: 1200px; background: var(--g-bg); color: var(--g-text); font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif">
+<div style="position: relative; width: 1600px; height: 1200px; background: var(--g-bg); color: var(--g-text); font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif">
 <svg width="128" height="8" viewBox="0 0 128 8" preserveAspectRatio="none" style="position: absolute; left: 384px; top: 312px; width: 128px; height: 8px; overflow: visible; fill: none; stroke: var(--g-line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M 0 4 L 128 4"></path></svg>
 <svg width="128" height="8" viewBox="0 0 128 8" preserveAspectRatio="none" style="position: absolute; left: 384px; top: 632px; width: 128px; height: 8px; overflow: visible; fill: none; stroke: var(--g-line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M 0 4 L 128 4"></path></svg>
 <svg width="8" height="320" viewBox="0 0 8 320" preserveAspectRatio="none" style="position: absolute; left: 508px; top: 316px; width: 8px; height: 320px; overflow: visible; fill: none; stroke: var(--g-line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M 4 0 L 4 320"></path></svg>
@@ -65,7 +66,7 @@ a{color:var(--g-link)}a:hover{color:var(--g-link-hover)}
 <svg width="8" height="55" viewBox="0 0 8 55" preserveAspectRatio="none" style="position: absolute; left: 606px; top: 752px; width: 8px; height: 55px; overflow: visible; fill: none; stroke: var(--g-line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><defs><marker id="dc-arrow-head-filled-6" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#94a3b8" stroke="none" style="stroke: none; fill: var(--g-line); fill: context-stroke"></path></marker></defs><path d="M 4 0 L 4 51" marker-end="url(#dc-arrow-head-filled-6)"></path></svg>
 <svg width="8" height="55" viewBox="0 0 8 55" preserveAspectRatio="none" style="position: absolute; left: 986px; top: 752px; width: 8px; height: 55px; overflow: visible; fill: none; stroke: var(--g-line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><defs><marker id="dc-arrow-head-filled-7" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#94a3b8" stroke="none" style="stroke: none; fill: var(--g-line); fill: context-stroke"></path></marker></defs><path d="M 4 0 L 4 51" marker-end="url(#dc-arrow-head-filled-7)"></path></svg>
 <svg width="8" height="55" viewBox="0 0 8 55" preserveAspectRatio="none" style="position: absolute; left: 1366px; top: 752px; width: 8px; height: 55px; overflow: visible; fill: none; stroke: var(--g-line); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><defs><marker id="dc-arrow-head-filled-8" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" fill="#94a3b8" stroke="none" style="stroke: none; fill: var(--g-line); fill: context-stroke"></path></marker></defs><path d="M 4 0 L 4 51" marker-end="url(#dc-arrow-head-filled-8)"></path></svg>
-<h1 style="position: absolute; left: 64px; top: 64px; width: 900px; margin: 0; padding-bottom: 12px; font-size: 56px; line-height: 1.0; font-weight: 900; letter-spacing: -1.2px; color: var(--g-link)">What I do at PagerDuty</h1>
+<h1 style="position: absolute; left: 64px; top: 64px; width: 900px; margin: 0; padding-bottom: 12px; font-size: 56px; line-height: 1.0; font-weight: 800; letter-spacing: -1.5px; color: var(--g-text)">What I do at PagerDuty</h1>
 <p style="position: absolute; left: 64px; top: 136px; width: 900px; margin: 0; font-size: 20px; font-weight: 650; color: var(--g-muted)">A single Technical Writer covering docs and e-learning&nbsp;</p>
 <div style="position: absolute; left: 64px; top: 216px; font-size: 16px; font-weight: 800; color: var(--g-muted)">What comes in</div>
 <div style="position: absolute; left: 1216px; top: 216px; font-size: 16px; font-weight: 800; color: var(--g-muted)">What I put out</div>

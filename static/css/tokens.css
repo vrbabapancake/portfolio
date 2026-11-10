@@ -1,82 +1,99 @@
-/* Mark's design system tokens (shared with 6Clues and Pub Quizzes): flat, neutral and green. No gradients, glows or purple.
-   Every text pair below passes WCAG 2.1 AA (4.5:1); borders, focus rings and
-   progress marks pass 3:1. Recheck contrast when changing a value. */
+/* Mark's Site design tokens: "Sketchbook". Slate teal + lilac on a light cream page,
+   plum-black ink, thin line-art outlines and grid-paper detail. Flat: no gradient
+   fills, no blurry glows; depth comes from hard offset lilac shadows.
+   Every text pair passes WCAG 2.1 AA (4.5:1); outlines and focus rings pass 3:1.
+   Recheck contrast when changing a value. (6Clues and Pub Quizzes keep their own
+   green tokens for now.) */
 :root {
-  /* Surfaces: crisp neutral with a faint green-grey cast. No beige/biscuit. */
-  --bg: #f4f6f5;
+  /* Surfaces */
+  --bg: #f6f1ea;               /* light cream page (pinker and lighter than beige) */
   --card: #ffffff;
   --field: #ffffff;
-  --track: #e5e9e7;            /* empty bars, quiet chips */
-  --overlay: rgba(24,33,28,.55);
+  --track: #ece4ef;
+  --overlay: rgba(38,19,42,.55);
 
   /* Ink */
-  --text: #18211c;             /* 16.3:1 on card */
-  --muted: #4a564e;            /* 7.6:1 on card */
-  --card-muted: #56625a;       /* 6.3:1 on card */
-  --border: #dde3e0;           /* decorative dividers only */
-  --field-border: #7b847d;     /* inputs: 3.8:1, needed so fields are visible */
+  --text: #26132a;             /* plum-black: 17.4:1 on card */
+  --muted: #55455a;            /* 8.8:1 on card */
+  --card-muted: #55455a;
+  --line: #26132a;             /* line-art outlines on cards, frames, buttons */
+  --border: rgba(38,19,42,.16);/* quiet dividers only */
+  --field-border: #7d6f80;     /* 4.7:1 */
+  --grid: rgba(38,19,42,.10);  /* grid-paper lines */
 
-  /* Brand green */
-  --accent: #1e6b45;           /* focus ring, dots, timer: 6.4:1 on card */
-  --accent-strong: #1a5f3d;    /* button fill: 7.6:1 with white text */
-  --accent-strong-hover: #144a2f;
-  --accent-text: #185a3a;      /* green text: 8.1:1 on card */
-  --icon-bg: #e2ede4;          /* pale green tint for chips and selected rows */
-  --hover-border: #1e6b45;
-  --ring: rgba(30,107,69,.28);
+  /* Slate teal: the brand colour */
+  --accent: #36677a;           /* focus ring, icons, small UI: 5.5:1 on bg */
+  --accent-strong: #2c5566;    /* button fill: 8.1:1 with white text */
+  --accent-strong-hover: #234553;
+  --accent-text: #2f5d6e;      /* teal links/text: 7.2:1 on card */
+  --band: #36677a;             /* hero band */
+  --on-band: #f6f1ea;          /* text on the band: 5.5:1 */
+  --ring: rgba(54,103,122,.30);
 
-  /* Brass: a warm second colour for winners and highlights */
-  --highlight: #f4dd9a;
-  --highlight-text: #3d2f05;   /* 9.7:1 on highlight */
+  /* Lilac: shapes, highlights, hover shadows */
+  --lilac: #f3cdf7;
+  --lilac-soft: #f8e4fa;
+  --lilac-text: #6b2d73;       /* 9.3:1 on card */
+  --on-lilac: #26132a;         /* text on lilac is always dark, both themes */
+  --icon-bg: var(--lilac);
+  --hover-border: var(--line);
+  --highlight: var(--lilac);
+  --highlight-text: var(--on-lilac);
 
-  /* Status (always paired with a ✓ / ✗ symbol, never colour alone) */
+  /* Status (always paired with a symbol or words) */
   --success: #1d6b3a;
   --success-bg: #e5f1e7;
   --danger: #b3261e;
   --danger-bg: #fbeceb;
 
-  /* Depth: borders do the work, shadows stay faint */
+  /* Depth: hard offset blocks, never blur */
   --shadow-button: none;
-  --shadow-card: 0 1px 2px rgba(24,33,28,.06);
-  --shadow-hover: 0 4px 12px rgba(24,33,28,.10);
-  --shadow: 0 8px 24px rgba(24,33,28,.14);
+  --shadow-card: none;
+  --shadow-hover: 6px 6px 0 var(--lilac);
+  --shadow: 8px 8px 0 var(--lilac);
 
-  --radius: 14px;
-  --radius-feature: 16px;
-  --radius-button: 10px;
+  --radius: 10px;
+  --radius-feature: 24px;      /* big lilac shapes */
+  --radius-button: 8px;
   --radius-tile: 8px;
-  --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  /* Type: geometric sans for headings and UI, sturdy serif for reading */
+  --font-display: 'Figtree', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-body: 'Bitter', Georgia, 'Times New Roman', serif;
+  --font: var(--font-display);
 }
 html.dark {
-  --bg: #111713;
-  --card: #1a221d;
-  --field: #111713;
-  --track: #2a342d;
+  --bg: #15232a;               /* deep slate */
+  --card: #1d2f37;
+  --field: #15232a;
+  --track: #2a3d45;
   --overlay: rgba(0,0,0,.70);
 
-  --text: #e6ebe5;
-  --muted: #b1bbb3;
-  --card-muted: #a7b2aa;
-  --border: #2c3830;
-  --field-border: #6e7b72;
+  --text: #f6f1ea;
+  --muted: #c6bccb;
+  --card-muted: #c6bccb;
+  --line: #c6bccb;
+  --border: rgba(246,241,234,.16);
+  --field-border: #8a9aa1;
+  --grid: rgba(246,241,234,.08);
 
-  --accent: #5cb983;
-  --accent-strong: #22754a;    /* 5.7:1 with white text */
-  --accent-strong-hover: #1b643f;
-  --accent-text: #7fd1a2;
-  --icon-bg: #203a2b;
-  --hover-border: #5cb983;
-  --ring: rgba(92,185,131,.35);
+  --accent: #8cc3d6;
+  --accent-strong: #2c5566;    /* white text 8.1:1 */
+  --accent-strong-hover: #346577;
+  --accent-text: #9fd0e1;
+  --band: #2c5566;
+  --on-band: #f6f1ea;          /* 7.2:1 */
+  --ring: rgba(140,195,214,.35);
 
-  --highlight: #4a3d12;
-  --highlight-text: #f6e3a6;
+  --lilac: #e9b6ee;
+  --lilac-soft: #3a2840;
+  --lilac-text: #f0c8f4;
 
   --success: #6fcf93;
   --success-bg: #18301f;
   --danger: #f28b82;
   --danger-bg: #3a1c1a;
 
-  --shadow-card: 0 1px 2px rgba(0,0,0,.30);
-  --shadow-hover: 0 4px 12px rgba(0,0,0,.40);
-  --shadow: 0 8px 24px rgba(0,0,0,.50);
+  --shadow-hover: 6px 6px 0 #6b4a72;
+  --shadow: 8px 8px 0 #6b4a72;
 }

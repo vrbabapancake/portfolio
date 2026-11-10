@@ -1,0 +1,114 @@
+/* Mark's Site components for the "Sketchbook" design system (tokens in tokens.css).
+   Loaded after each layout's inline <style>, so these rules win. */
+
+/* ---------- type ---------- */
+body { font-family: var(--font-body); background: var(--bg); color: var(--text); }
+h1, h2, h3, h4, .brand, .headline, .browse-title, .backlink, .featured-cta,
+.iconbtn, button, .doc-btn, .pdf-link, .card h3, .site-footer .tagline { font-family: var(--font-display); }
+p, li, .lead, .subhead, .card p { font-family: var(--font-body); }
+a { color: var(--accent-text); text-underline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- top bar: flat cream strip with an ink rule ---------- */
+.topbar { background: var(--bg); backdrop-filter: none; border-bottom: 1.5px solid var(--line); }
+.brand { font-weight: 800; letter-spacing: -.2px; }
+.iconbtn {
+  border: 1.5px solid var(--line); border-radius: var(--radius-button);
+  background: var(--card); box-shadow: none; color: var(--text);
+  transition: background-color .12s ease, transform .12s ease, box-shadow .12s ease;
+}
+.iconbtn:hover { background: var(--lilac); color: var(--on-lilac); border-color: var(--line); }
+
+/* ---------- hero: slate-teal band, lilac block, "browser window" photo frame ---------- */
+.hero { background: var(--band); color: var(--on-band); padding: 72px 0 64px; border-bottom: 1.5px solid var(--line); }
+.headline {
+  color: var(--on-band); font-weight: 800; letter-spacing: -1.5px;
+  font-size: clamp(44px, 7vw, 76px); line-height: 1.02;
+}
+.subhead { color: var(--on-band); font-weight: 400; font-size: 21px; line-height: 1.55; }
+.playwrap { min-height: 340px; }
+.playwrap::before {                       /* the lilac shape behind the window */
+  content: ""; position: absolute; z-index: -1;
+  width: 300px; height: 300px; transform: translate(-34px, -26px);
+  background: var(--lilac); border-radius: var(--radius-feature);
+}
+.profile-wrap {
+  width: 270px; height: 300px; border-radius: 6px;
+  border: 1.5px solid var(--line); background-color: var(--card);
+  box-shadow: none; padding: 40px 14px 14px; overflow: hidden; position: relative;
+  /* grid paper */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M16 0H0V16' fill='none' stroke='%2326132a' stroke-opacity='.12'/%3E%3C/svg%3E");
+}
+html.dark .profile-wrap {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M16 0H0V16' fill='none' stroke='%23f6f1ea' stroke-opacity='.10'/%3E%3C/svg%3E");
+}
+.profile-wrap::before {                   /* window title bar */
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 26px;
+  border-bottom: 1.5px solid var(--line); background: var(--card);
+}
+.profile-wrap::after {                    /* three window dots */
+  content: ""; position: absolute; top: 9px; right: 38px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--line); box-shadow: 13px 0 0 var(--line), 26px 0 0 var(--line);
+}
+.profile-wrap img { border: 1.5px solid var(--line); border-radius: 2px; }
+
+/* ---------- section headings and cards ---------- */
+.browse { padding: 56px 0 80px; }
+.browse-title {
+  text-align: left; color: var(--text); font-size: 28px; font-weight: 800; letter-spacing: -.4px;
+  margin: 0 0 22px;
+}
+.card {
+  border: 1.5px solid var(--line); border-radius: var(--radius); background: var(--card);
+  box-shadow: none; padding: 22px;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.card:hover { transform: translate(-3px, -3px); border-color: var(--line); box-shadow: var(--shadow-hover); }
+.card-icon {
+  border: 1.5px solid var(--line); border-radius: var(--radius-tile);
+  background: var(--lilac); color: var(--on-lilac);
+}
+.card h3 { font-size: 18px; font-weight: 800; letter-spacing: -.2px; }
+.card p { font-size: 15px; line-height: 1.5; color: var(--card-muted); }
+.card.featured { background: var(--lilac-soft); }
+.card.featured p { font-size: 15.5px; }
+.featured-cta {
+  background: var(--card); color: var(--text); border: 1.5px solid var(--line);
+  border-radius: var(--radius-button); font-weight: 800;
+}
+.card.featured:hover .featured-cta { background: var(--accent-strong); color: #fff; border-color: var(--accent-strong); }
+
+/* ---------- section pages ---------- */
+main h1 { color: var(--text); font-weight: 800; letter-spacing: -1px; }
+.lead { color: var(--text); font-size: 18px; line-height: 1.7; }
+.lead a { color: var(--accent-text); }
+.backlink, .pdf-link {
+  border: 1.5px solid var(--line); border-radius: var(--radius-button);
+  background: var(--card); color: var(--text); box-shadow: none;
+}
+.backlink:hover, .pdf-link:hover { background: var(--lilac); color: var(--on-lilac); border-color: var(--line); }
+
+/* Embedded graphics, courses, tours and document cards inside page content.
+   ("main" raises specificity over the inline styles in each content page.) */
+main .graphic-embed, main .course-embed, main .tour-embed, main .doc-card {
+  border: 1.5px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
+}
+main .tour-mobile img, main .doc-thumb { border: 1.5px solid var(--line); box-shadow: none; }
+main .doc-thumb:hover { transform: translate(-3px, -3px); box-shadow: var(--shadow-hover); }
+main .doc-btn { border: 1.5px solid var(--line); border-radius: var(--radius-button); }
+body main .lead a.doc-btn.primary { border-color: var(--line); }
+
+/* ---------- footer ---------- */
+.site-footer { border-top: 1.5px solid var(--line); color: var(--muted); }
+
+@media (max-width: 980px) {
+  .hero { padding: 40px 0 44px; }
+  .playwrap { padding: 34px 0 10px; }
+  .playwrap::before { width: 220px; height: 220px; transform: translate(-24px, -10px); }
+  .profile-wrap { width: 200px; height: 224px; padding: 34px 10px 10px; }
+}
+@media (max-width: 560px) {
+  .playwrap::before { width: 170px; height: 170px; transform: translate(-18px, -6px); }
+  .profile-wrap { width: 160px; height: 182px; }
+  .browse-title { font-size: 24px; }
+}
