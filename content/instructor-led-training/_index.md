@@ -26,7 +26,7 @@ title: "Instructor Led Training"
 }
 .doc-thumb:hover{
   transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(59,130,246,.25);
+  box-shadow: var(--shadow-hover);
 }
 .doc-thumb img{ width: 100%; height: auto; display: block; }
 .doc-meta{ margin: 0 0 14px; font-size: 14px; color: var(--muted); line-height: 1.5; }
@@ -48,9 +48,9 @@ title: "Instructor Led Training"
 }
 /* .lead a sets a link colour; these need higher specificity to win in both themes */
 body .lead a.doc-btn{ color: var(--text); }
-body .lead a.doc-btn.primary{ background: #3b82f6; border-color: #3b82f6; color: #fff; }
-.doc-btn:hover{ border-color: rgba(59,130,246,.55); }
-body .lead a.doc-btn.primary:hover{ background: #2563eb; }
+body .lead a.doc-btn.primary{ background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
+.doc-btn:hover{ border-color: var(--hover-border); }
+body .lead a.doc-btn.primary:hover{ background: var(--accent-strong-hover); }
 @media (max-width: 560px){
   .doc-card{ flex-direction: column; align-items: flex-start; }
   .doc-thumb{ width: 140px; }
