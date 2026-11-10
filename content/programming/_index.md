@@ -4,16 +4,36 @@ title: "Programming"
 
 I enjoy building things beyond documentation. Here are some projects I made with Claude Code.
 
-### 6Clues — Trivia Game
+### Pub Trivia
 
-I used to host a pub movie trivia game called 6Clues. I used all the questions I made over the years to build this game. The game works like this: each round gives you six clues that progressively reveal the answer — the earlier you guess correctly, the more points you earn.
+<figure class="graphic-embed games-graphic">
+  <object data="how-the-games-work.svg" type="image/svg+xml" aria-label="How the games work: the host opens the big screen and gets a room code, and each team joins on a phone. In 6Clues, movie clues appear one at a time and earlier guesses score more. In Pub Trivia, the host builds a quiz from the round bank, teams answer each round on their phone, and the answers are revealed with ticks and crosses.">
+    <img src="how-the-games-work.svg" alt="How the games work: a big screen with a room code, team phones, and how 6Clues and Pub Quizzes are played and scored.">
+  </object>
+</figure>
 
-<div style="margin-top: 24px;">
-  <a href="https://6clues.netlify.app/" target="_blank" rel="noopener noreferrer"
-     style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:var(--accent-strong);color:#fff;font-weight:800;font-size:16px;border-radius:var(--radius-button);text-decoration:none;">
-    Play 6Clues ↗
-  </a>
+I used to host pub trivia, including a movie trivia game called 6Clues. I turned all the questions I wrote over the years into two games you can play with friends. The host puts the game on a big screen, and each team joins on a phone with a four-letter room code.
+
+In **6Clues**, each movie is revealed over six clues, hardest first. The earlier your team guesses it, the more points you earn. **Pub Trivia** is a classic pub quiz: the host picks tonight's rounds, teams answer each round on their phone, and the big screen reveals the answers one by one.
+
+<div class="game-buttons">
+  <a href="https://6clues.netlify.app/" target="_blank" rel="noopener noreferrer">6Clues Trivia ↗</a>
+  <a href="https://pub-quizzes.netlify.app/" target="_blank" rel="noopener noreferrer">Pub Trivia ↗</a>
 </div>
+
+<style>
+.games-graphic { margin: 8px 0 28px; padding: 0; overflow: hidden; background: #f6f1ea; }
+.games-graphic object, .games-graphic img { display: block; width: 100%; height: auto; aspect-ratio: 1200 / 1120; }
+.game-buttons { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
+.game-buttons a {
+  display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px;
+  background: var(--accent-strong); color: #fff; font-family: var(--font-display);
+  font-weight: 800; font-size: 16px; border: 1.5px solid var(--line);
+  border-radius: var(--radius-button); text-decoration: none;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.game-buttons a:hover { background: var(--accent-strong-hover); transform: translate(-3px, -3px); box-shadow: var(--shadow-hover); }
+</style>
 
 ### John Lithgow Movie Picker
 
