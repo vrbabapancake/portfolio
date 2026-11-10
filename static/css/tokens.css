@@ -1,0 +1,82 @@
+/* Mark's design system tokens (shared with 6Clues and Pub Quizzes): flat, warm and green. No gradients, glows or purple.
+   Every text pair below passes WCAG 2.1 AA (4.5:1); borders, focus rings and
+   progress marks pass 3:1. Recheck contrast when changing a value. */
+:root {
+  /* Surfaces: warm paper, not cool grey */
+  --bg: #f5f3ec;
+  --card: #fffefa;
+  --field: #fffefa;
+  --track: #e6e3da;            /* empty bars, quiet chips */
+  --overlay: rgba(24,33,28,.55);
+
+  /* Ink */
+  --text: #18211c;             /* 16.3:1 on card */
+  --muted: #4a564e;            /* 7.6:1 on card */
+  --card-muted: #56625a;       /* 6.3:1 on card */
+  --border: #e0ddd2;           /* decorative dividers only */
+  --field-border: #7b847d;     /* inputs: 3.8:1, needed so fields are visible */
+
+  /* Brand green */
+  --accent: #1e6b45;           /* focus ring, dots, timer: 6.4:1 on card */
+  --accent-strong: #1a5f3d;    /* button fill: 7.6:1 with white text */
+  --accent-strong-hover: #144a2f;
+  --accent-text: #185a3a;      /* green text: 8.1:1 on card */
+  --icon-bg: #e2ede4;          /* pale green tint for chips and selected rows */
+  --hover-border: #1e6b45;
+  --ring: rgba(30,107,69,.28);
+
+  /* Brass: a warm second colour for winners and highlights */
+  --highlight: #f4dd9a;
+  --highlight-text: #3d2f05;   /* 9.7:1 on highlight */
+
+  /* Status (always paired with a ✓ / ✗ symbol, never colour alone) */
+  --success: #1d6b3a;
+  --success-bg: #e5f1e7;
+  --danger: #b3261e;
+  --danger-bg: #fbeceb;
+
+  /* Depth: borders do the work, shadows stay faint */
+  --shadow-button: none;
+  --shadow-card: 0 1px 2px rgba(24,33,28,.06);
+  --shadow-hover: 0 4px 12px rgba(24,33,28,.10);
+  --shadow: 0 8px 24px rgba(24,33,28,.14);
+
+  --radius: 14px;
+  --radius-feature: 16px;
+  --radius-button: 10px;
+  --radius-tile: 8px;
+  --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+html.dark {
+  --bg: #111713;
+  --card: #1a221d;
+  --field: #111713;
+  --track: #2a342d;
+  --overlay: rgba(0,0,0,.70);
+
+  --text: #e6ebe5;
+  --muted: #b1bbb3;
+  --card-muted: #a7b2aa;
+  --border: #2c3830;
+  --field-border: #6e7b72;
+
+  --accent: #5cb983;
+  --accent-strong: #22754a;    /* 5.7:1 with white text */
+  --accent-strong-hover: #1b643f;
+  --accent-text: #7fd1a2;
+  --icon-bg: #203a2b;
+  --hover-border: #5cb983;
+  --ring: rgba(92,185,131,.35);
+
+  --highlight: #4a3d12;
+  --highlight-text: #f6e3a6;
+
+  --success: #6fcf93;
+  --success-bg: #18301f;
+  --danger: #f28b82;
+  --danger-bg: #3a1c1a;
+
+  --shadow-card: 0 1px 2px rgba(0,0,0,.30);
+  --shadow-hover: 0 4px 12px rgba(0,0,0,.40);
+  --shadow: 0 8px 24px rgba(0,0,0,.50);
+}
