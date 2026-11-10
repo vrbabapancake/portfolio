@@ -1,19 +1,19 @@
-/* Mark's design system tokens (shared with 6Clues and Pub Quizzes): flat, warm and green. No gradients, glows or purple.
+/* Mark's design system tokens (shared with 6Clues and Pub Quizzes): flat, neutral and green. No gradients, glows or purple.
    Every text pair below passes WCAG 2.1 AA (4.5:1); borders, focus rings and
    progress marks pass 3:1. Recheck contrast when changing a value. */
 :root {
-  /* Surfaces: warm paper, not cool grey */
-  --bg: #f5f3ec;
-  --card: #fffefa;
-  --field: #fffefa;
-  --track: #e6e3da;            /* empty bars, quiet chips */
+  /* Surfaces: crisp neutral with a faint green-grey cast. No beige/biscuit. */
+  --bg: #f4f6f5;
+  --card: #ffffff;
+  --field: #ffffff;
+  --track: #e5e9e7;            /* empty bars, quiet chips */
   --overlay: rgba(24,33,28,.55);
 
   /* Ink */
   --text: #18211c;             /* 16.3:1 on card */
   --muted: #4a564e;            /* 7.6:1 on card */
   --card-muted: #56625a;       /* 6.3:1 on card */
-  --border: #e0ddd2;           /* decorative dividers only */
+  --border: #dde3e0;           /* decorative dividers only */
   --field-border: #7b847d;     /* inputs: 3.8:1, needed so fields are visible */
 
   /* Brand green */

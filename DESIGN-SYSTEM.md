@@ -1,6 +1,6 @@
 # Mark's design system
 
-One look across Mark's Site, 6Clues and Pub Quizzes: flat, warm and green.
+One look across Mark's Site, 6Clues and Pub Quizzes: flat, neutral and green.
 The tokens live in [`static/css/tokens.css`](static/css/tokens.css), the same file 6Clues
 and Pub Quizzes use. Copy it into a project and build on the variables. Don't hard-code colours.
 
@@ -9,7 +9,7 @@ and Pub Quizzes use. Copy it into a project and build on the variables. Don't ha
 1. **No gradients, glows or purple.** Solid fills only, including headings, buttons and progress bars.
 2. **Green carries the brand.** Deep green for buttons, links, headings and progress.
    Brass (`--highlight`) is the only second colour, and it's saved for winners and special moments.
-3. **Warm, not clinical.** Off-white "paper" background and green-black ink, not cool slate greys.
+3. **Neutral, not biscuit.** A crisp off-white with a faint green-grey cast, white cards and green-black ink. Avoid beige or cream backgrounds, which read as AI-tool branding.
 4. **Borders over shadows.** Cards get a 1px border and a faint shadow. No big floating drop shadows.
 5. **Modest corners.** 14px cards, 10px buttons, 8px tiles. Pills (999px) only for chips and toggles.
 6. **System fonts.** `--font` is the native UI stack, heavy weights (800–900) for headings and labels.
@@ -18,12 +18,12 @@ and Pub Quizzes use. Copy it into a project and build on the variables. Don't ha
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| `--bg` | `#f5f3ec` | `#111713` | Page background |
-| `--card` | `#fffefa` | `#1a221d` | Cards, buttons, panels |
+| `--bg` | `#f4f6f5` | `#111713` | Page background |
+| `--card` | `#ffffff` | `#1a221d` | Cards, buttons, panels |
 | `--text` | `#18211c` | `#e6ebe5` | Body text and headings |
 | `--muted` | `#4a564e` | `#b1bbb3` | Secondary text, eyebrows |
 | `--card-muted` | `#56625a` | `#a7b2aa` | Secondary text on cards, placeholders |
-| `--border` | `#e0ddd2` | `#2c3830` | Decorative dividers only |
+| `--border` | `#dde3e0` | `#2c3830` | Decorative dividers only |
 | `--field-border` | `#7b847d` | `#6e7b72` | Input outlines (must stay 3:1) |
 | `--accent` | `#1e6b45` | `#5cb983` | Focus ring, dots, timers, hover borders |
 | `--accent-strong` | `#1a5f3d` | `#22754a` | Primary button fill (white text) |
