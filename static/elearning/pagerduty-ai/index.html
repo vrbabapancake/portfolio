@@ -483,11 +483,11 @@ const QUIZ=[
 const KEY='pd-ai-progress';
 function findAPI(w){for(let i=0;w&&i<10;i++){try{if(w.API_1484_11)return w.API_1484_11}catch(e){}if(w.parent===w)break;w=w.parent}try{return window.opener&&window.opener.API_1484_11}catch(e){return null}}
 class Component extends DCLogic{
- state={cur:0,done:{},sidebar:true,open:{},tab:0,flip:{},step:0,nstep:0,ans:{},sub:{}};
+ state={cur:0,done:{},sidebar:false,open:{},tab:0,flip:{},step:0,nstep:0,ans:{},sub:{}};
  componentWillUnmount(){window.removeEventListener('keydown',this.onKey)}
  componentDidMount(){this.onKey=e=>{const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable))return;if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;const d=e.key==='ArrowRight'?1:-1;const id=IDS[this.state.cur];if(id==='life'){e.preventDefault();this.setState(s=>({step:Math.max(0,Math.min(STEPS.length-1,s.step+d))}))}else if(id==='nav'){e.preventDefault();this.setState(s=>({nstep:Math.max(0,Math.min(NS-1,s.nstep+d))}))}};window.addEventListener('keydown',this.onKey);let s={};try{s=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
   this.api=findAPI(window);if(this.api){try{this.api.Initialize('');const loc=this.api.GetValue('cmi.location');const sd=this.api.GetValue('cmi.suspend_data');if(sd)s={...s,...JSON.parse(sd)};if(loc)s.cur=+loc}catch(e){}}
-  this.setState({cur:s.cur||0,done:s.done||{}});const mq=window.matchMedia('(max-width: 800px)');const onMq=()=>this.setState({mobile:mq.matches,sidebar:!mq.matches});onMq();mq.addEventListener('change',onMq);window.addEventListener('beforeunload',()=>{try{this.api&&this.api.Terminate('')}catch(e){}})}
+  this.setState({cur:s.cur||0,done:s.done||{}});const mq=window.matchMedia('(max-width: 800px)');const onMq=()=>this.setState({mobile:mq.matches,sidebar:false});onMq();mq.addEventListener('change',onMq);window.addEventListener('beforeunload',()=>{try{this.api&&this.api.Terminate('')}catch(e){}})}
  save(st){const d={cur:st.cur,done:st.done};try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}
   const a=this.api;if(!a)return;try{const n=Object.keys(st.done).length;a.SetValue('cmi.location',String(st.cur));a.SetValue('cmi.suspend_data',JSON.stringify(d));a.SetValue('cmi.progress_measure',(n/IDS.length).toFixed(2));
    const q=QUIZ.filter((x,i)=>st.sub[i]).length;if(q===QUIZ.length){const c=QUIZ.filter((x,i)=>st.ans[i]===x.a).length;a.SetValue('cmi.score.scaled',(c/QUIZ.length).toFixed(2));a.SetValue('cmi.score.raw',String(c));a.SetValue('cmi.score.max',String(QUIZ.length));a.SetValue('cmi.score.min','0')}
@@ -1017,11 +1017,11 @@ const QUIZ=[
 const KEY='pd-ai-progress';
 function findAPI(w){for(let i=0;w&&i<10;i++){try{if(w.API_1484_11)return w.API_1484_11}catch(e){}if(w.parent===w)break;w=w.parent}try{return window.opener&&window.opener.API_1484_11}catch(e){return null}}
 class Component extends DCLogic{
- state={cur:0,done:{},sidebar:true,open:{},tab:0,flip:{},step:0,nstep:0,ans:{},sub:{}};
+ state={cur:0,done:{},sidebar:false,open:{},tab:0,flip:{},step:0,nstep:0,ans:{},sub:{}};
  componentWillUnmount(){window.removeEventListener('keydown',this.onKey)}
  componentDidMount(){this.onKey=e=>{const t=e.target;if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable))return;if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;const d=e.key==='ArrowRight'?1:-1;const id=IDS[this.state.cur];if(id==='life'){e.preventDefault();this.setState(s=>({step:Math.max(0,Math.min(STEPS.length-1,s.step+d))}))}else if(id==='nav'){e.preventDefault();this.setState(s=>({nstep:Math.max(0,Math.min(NS-1,s.nstep+d))}))}};window.addEventListener('keydown',this.onKey);let s={};try{s=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
   this.api=findAPI(window);if(this.api){try{this.api.Initialize('');const loc=this.api.GetValue('cmi.location');const sd=this.api.GetValue('cmi.suspend_data');if(sd)s={...s,...JSON.parse(sd)};if(loc)s.cur=+loc}catch(e){}}
-  this.setState({cur:s.cur||0,done:s.done||{}});const mq=window.matchMedia('(max-width: 800px)');const onMq=()=>this.setState({mobile:mq.matches,sidebar:!mq.matches});onMq();mq.addEventListener('change',onMq);window.addEventListener('beforeunload',()=>{try{this.api&&this.api.Terminate('')}catch(e){}})}
+  this.setState({cur:s.cur||0,done:s.done||{}});const mq=window.matchMedia('(max-width: 800px)');const onMq=()=>this.setState({mobile:mq.matches,sidebar:false});onMq();mq.addEventListener('change',onMq);window.addEventListener('beforeunload',()=>{try{this.api&&this.api.Terminate('')}catch(e){}})}
  save(st){const d={cur:st.cur,done:st.done};try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}
   const a=this.api;if(!a)return;try{const n=Object.keys(st.done).length;a.SetValue('cmi.location',String(st.cur));a.SetValue('cmi.suspend_data',JSON.stringify(d));a.SetValue('cmi.progress_measure',(n/IDS.length).toFixed(2));
    const q=QUIZ.filter((x,i)=>st.sub[i]).length;if(q===QUIZ.length){const c=QUIZ.filter((x,i)=>st.ans[i]===x.a).length;a.SetValue('cmi.score.scaled',(c/QUIZ.length).toFixed(2));a.SetValue('cmi.score.raw',String(c));a.SetValue('cmi.score.max',String(QUIZ.length));a.SetValue('cmi.score.min','0')}

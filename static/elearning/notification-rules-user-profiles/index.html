@@ -338,8 +338,8 @@ function CM_ANIM(i){const e=React.createElement,G='var(--pd-green)',DG='var(--pd
   e('g',{key:'d'},...dots(24,30)),e('g',{key:'n',style:A('cm-pop','2.4s')},e('circle',{cx:56,cy:12,r:7,fill:DG,stroke:'#fff',strokeWidth:2}))]);
 }
 class Component extends DCLogic{
- state={cur:0,done:{},sidebar:true,open:{},tab:0,flip:{},step:0,nstep:0,ans:{},sub:{}};
- componentDidMount(){this.mq=window.matchMedia('(max-width: 900px)');const onMq=()=>this.setState({narrow:this.mq.matches,sidebar:!this.mq.matches});onMq();this.mq.addEventListener('change',onMq);let s={};try{s=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+ state={cur:0,done:{},sidebar:false,open:{},tab:0,flip:{},step:0,nstep:0,ans:{},sub:{}};
+ componentDidMount(){this.mq=window.matchMedia('(max-width: 900px)');const onMq=()=>this.setState({narrow:this.mq.matches,sidebar:false});onMq();this.mq.addEventListener('change',onMq);let s={};try{s=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
   this.api=findAPI(window);if(this.api){try{this.api.Initialize('');const loc=this.api.GetValue('cmi.location');const sd=this.api.GetValue('cmi.suspend_data');if(sd)s={...s,...JSON.parse(sd)};if(loc)s.cur=+loc}catch(e){}}
   this.setState({cur:s.cur||0,done:s.done||{},ui:s.ui||'new'});window.addEventListener('beforeunload',()=>{try{this.api&&this.api.Terminate('')}catch(e){}})}
  save(st){const d={cur:st.cur,done:st.done,ui:st.ui};try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}
