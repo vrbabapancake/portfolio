@@ -45,3 +45,11 @@ Pick a John Lithgow movie with the spin of a wheel.
     Spin the Wheel ↗
   </a>
 </div>
+
+### Columbo Scenario Creator
+
+Build your own Columbo murder mystery with a few taps. Pick a murderer, a victim, a motive, a murder method and an alibi, then see the slip-up that gives them away, Columbo's "just one more thing" and how he catches them. Every piece comes from the first four seasons of the show, so you can end up with a chess grandmaster killing his rich uncle with exploding cigars to save a vineyard.
+
+<div class="game-buttons">
+  <a href="../columbo-scenario-creator/">Create a case →</a>
+</div>
