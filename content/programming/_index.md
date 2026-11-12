@@ -35,21 +35,10 @@ In **6Clues**, each movie is revealed over six clues, hardest first. The earlier
 .game-buttons a:hover { background: var(--accent-strong-hover); transform: translate(-3px, -3px); box-shadow: var(--shadow-hover); }
 </style>
 
-### John Lithgow Movie Picker
+### Columbo Episode Wheel
 
-Pick a John Lithgow movie with the spin of a wheel.
-
-<div style="margin-top: 24px;">
-  <a href="https://vrbabapancake.github.io/john-lithgow/" target="_blank" rel="noopener noreferrer"
-     style="display:inline-flex;align-items:center;gap:10px;padding:14px 28px;background:var(--accent-strong);color:#fff;font-weight:800;font-size:16px;border-radius:var(--radius-button);text-decoration:none;">
-    Spin the Wheel ↗
-  </a>
-</div>
-
-### Columbo Scenario Creator
-
-Build your own Columbo murder mystery with a few taps. Pick a murderer, a victim, a motive, a murder method and an alibi, then see the slip-up that gives them away, Columbo's "just one more thing" and how he catches them. Every piece comes from the first four seasons of the show, so you can end up with a chess grandmaster killing his rich uncle with exploding cigars to save a vineyard.
+Can't decide which Columbo to watch? Spin the wheel to pick one of all 69 episodes, from the 1968 pilot to the 2003 finale. When it stops, you get the connections behind that episode: Any Old Port in a Storm was directed by Sean Penn's dad, and the killer in Requiem for a Falling Star was Frank Lloyd Wright's granddaughter.
 
 <div class="game-buttons">
-  <a href="../columbo-scenario-creator/">Create a case →</a>
+  <a href="../columbo-episode-wheel/">Spin the wheel →</a>
 </div>

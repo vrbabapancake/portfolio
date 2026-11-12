@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Columbo Episode Wheel</title>
+<meta name="description" content="Can't pick a Columbo to watch? Spin the wheel for one of all 69 episodes, with trivia about the connections behind each one.">
+<script>
+  (function(){
+    var t = null; try { t = localStorage.getItem('theme'); } catch(e) {}
+    if (t === 'dark' || (!t && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+  })();
+</script>
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600;1,400&family=Figtree:wght@600;700;800;900&display=swap">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.55; }
+  a { color: var(--accent-text); text-underline-offset: 3px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+
+  .topbar { border-bottom: 1.5px solid var(--line); }
+  .topbar .wrap { display: flex; align-items: center; gap: 12px; min-height: 64px; }
+  .back { font-family: var(--font-display); font-weight: 800; color: var(--text); text-decoration: none;
+    border: 1.5px solid var(--line); border-radius: var(--radius-button); padding: 8px 14px; background: var(--card); }
+  .back:hover { background: var(--lilac); color: var(--on-lilac); }
+  .spacer { flex: 1; }
+  .iconbtn { width: 44px; height: 44px; display: grid; place-items: center; border: 1.5px solid var(--line);
+    border-radius: var(--radius-button); background: var(--card); color: var(--text); cursor: pointer; }
+  .iconbtn:hover { background: var(--lilac); color: var(--on-lilac); }
+  .iconbtn svg { width: 20px; height: 20px; }
+  html.dark .icon-moon, html:not(.dark) .icon-sun { display: none; }
+
+  header.hero { background: var(--band); color: var(--on-band); border-bottom: 1.5px solid var(--line); }
+  .hero .wrap { padding-top: 34px; padding-bottom: 30px; }
+  .hero h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(34px, 5.6vw, 60px); line-height: 1.02; letter-spacing: -1.2px; margin: 0 0 10px; }
+  .hero p { font-size: 18px; margin: 0; max-width: 640px; }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 420px); gap: 32px; align-items: start; margin-top: 26px; }
+
+  /* filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 18px; }
+  .filters .label { font-family: var(--font-display); font-weight: 800; font-size: 13px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+  .chip { font-family: var(--font-display); font-weight: 700; font-size: 14px; min-height: 36px; padding: 0 12px;
+    border: 1.5px solid var(--line); border-radius: 999px; background: var(--card); color: var(--text); cursor: pointer; }
+  .chip:hover { background: var(--lilac-soft); }
+  .chip[aria-pressed="true"] { background: var(--accent-strong); color: #fff; }
+  .chip.quick { border-style: dashed; }
+
+  /* wheel */
+  .wheel-box { position: relative; width: min(100%, 620px); margin: 0 auto; aspect-ratio: 1; }
+  .wheel-box::before { content: ""; position: absolute; inset: 4% -2% -3% 4%; background: var(--lilac); border-radius: 50%; }
+  #wheel { position: relative; width: 100%; height: 100%; display: block; }
+  #spinner { transform-origin: 0 0; transition: transform 5.2s cubic-bezier(.12,.72,.08,1); }
+  .pointer { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); width: 34px; height: 44px; z-index: 2; filter: drop-shadow(0 2px 0 var(--line)); }
+  .hub { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 25%; aspect-ratio: 1; border-radius: 50%;
+    border: 2px solid var(--line); background: var(--card); color: var(--text); font-family: var(--font-display); font-weight: 900;
+    font-size: clamp(16px, 3vw, 24px); cursor: pointer; z-index: 2; }
+  .hub:hover:not(:disabled) { background: var(--lilac); color: var(--on-lilac); }
+  .hub:disabled { cursor: default; }
+  .count { text-align: center; color: var(--muted); font-size: 15px; margin-top: 12px; }
+
+  /* result */
+  .result { background: var(--card); border: 1.5px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px 24px; position: sticky; top: 16px; }
+  .result .eyebrow { font-family: var(--font-display); font-weight: 800; font-size: 13px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--lilac-text); }
+  .result h2 { font-family: var(--font-display); font-weight: 900; font-size: 28px; line-height: 1.12; letter-spacing: -.4px; margin: 6px 0 6px; }
+  .meta { color: var(--muted); font-size: 15px; margin-bottom: 14px; }
+  .result h3 { font-family: var(--font-display); font-weight: 800; font-size: 16px; margin: 0 0 8px; }
+  .facts { margin: 0 0 14px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .facts li { position: relative; padding-left: 26px; font-size: 16.5px; }
+  .facts li::before { content: ""; position: absolute; left: 4px; top: .5em; width: 10px; height: 10px; border: 1.5px solid var(--line); border-radius: 50%; background: var(--lilac); }
+  .result .empty { color: var(--muted); font-size: 17px; }
+  .result .empty b { color: var(--text); }
+  .result.pop { animation: pop .4s ease; }
+  @keyframes pop { 0% { transform: translate(0,6px); opacity: .4; } 100% { transform: none; opacity: 1; } }
+  .more { font-size: 15px; }
+
+  footer { border-top: 1.5px solid var(--line); margin-top: 44px; padding: 20px 0 32px; color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .result { position: static; } }
+  @media (prefers-reduced-motion: reduce) { #spinner { transition-duration: 1.2s; } .result.pop { animation: none; } }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="wrap">
+    <a class="back" href="../programming/">← Programming</a>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="theme" type="button" aria-label="Dark mode" aria-pressed="false" title="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Columbo Episode Wheel</h1>
+    <p>Can't decide which Columbo to watch tonight? Spin the wheel. When it stops, you get the episode plus the connections behind it: who's related to whom, and who turns up again.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="filters" role="group" aria-label="Which episodes are on the wheel">
+    <span class="label">On the wheel</span>
+    <button class="chip quick" type="button" data-quick="all">All</button>
+    <button class="chip quick" type="button" data-quick="70s">1968–1978</button>
+    <button class="chip quick" type="button" data-quick="abc">1989–2003</button>
+    <span id="season-chips"></span>
+  </div>
+
+  <div class="layout">
+    <div>
+      <div class="wheel-box">
+        <svg class="pointer" viewBox="0 0 34 44" aria-hidden="true"><path d="M3 3 H31 L17 41 Z" fill="var(--accent-strong)" stroke="var(--line)" stroke-width="2.5" stroke-linejoin="round"/></svg>
+        <svg id="wheel" viewBox="-250 -250 500 500" role="img" aria-label="Wheel of Columbo episodes"><g id="spinner"></g></svg>
+        <button class="hub" id="spin" type="button">SPIN</button>
+      </div>
+      <p class="count" id="count"></p>
+    </div>
+
+    <section class="result" id="result" aria-live="polite">
+      <p class="empty"><b>Spin the wheel</b> to pick tonight's episode. Use the season buttons to narrow it down, say to just the 1970s classics.</p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    Built by Mark Philp with Claude Code. Episode details and connections are from Wikipedia's
+    <a href="https://en.wikipedia.org/wiki/List_of_Columbo_episodes">Columbo episode pages</a> and the linked cast and crew articles
+    (<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>). An unofficial fan project.
+  </div>
+</footer>
+
+<script src="episodes.js"></script>
+<script>
+(function () {
+  const ALL = window.COLUMBO;
+  const SEASONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const seasonName = s => (s === 0 ? 'Pilots' : 'Season ' + s);
+  const chipName = s => (s === 0 ? 'Pilots' : 'S' + s);
+  const wikiFor = ep => ep.s === 0 ? 'https://en.wikipedia.org/wiki/List_of_Columbo_episodes' : 'https://en.wikipedia.org/wiki/Columbo_season_' + ep.s;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  let on = new Set(SEASONS);
+  let list = ALL.slice();
+  let rotation = 0, spinning = false;
+
+  // Slice fills from the Sketchbook palette, each paired with a readable text colour
+  const FILLS = [['#36677a', '#f6f1ea'], ['#f3cdf7', '#26132a'], ['#ffffff', '#26132a'], ['#2c5566', '#f6f1ea'], ['#f8e4fa', '#26132a'], ['#e6eef1', '#26132a']];
+
+  function polar(r, deg) { const a = (deg - 90) * Math.PI / 180; return [r * Math.cos(a), r * Math.sin(a)]; }
+
+  function drawWheel() {
+    const n = list.length, step = 360 / n, R = 240;
+    const font = n > 50 ? 7.5 : n > 30 ? 9 : n > 16 ? 11 : 13;
+    const maxChars = n > 50 ? 26 : n > 30 ? 26 : 24;
+    let html = '';
+    list.forEach((ep, i) => {
+      const a0 = i * step, a1 = (i + 1) * step;
+      const [x0, y0] = polar(R, a0), [x1, y1] = polar(R, a1);
+      const [fill, ink] = FILLS[i % FILLS.length];
+      const large = step > 180 ? 1 : 0;
+      html += n === 1
+        ? `<circle r="${R}" fill="${fill}" stroke="#26132a" stroke-width="1.5"/>`
+        : `<path d="M0 0 L${x0.toFixed(2)} ${y0.toFixed(2)} A${R} ${R} 0 ${large} 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z" fill="${fill}" stroke="#26132a" stroke-width="1.2"/>`;
+      const mid = a0 + step / 2;
+      let label = ep.t.length > maxChars ? ep.t.slice(0, maxChars - 1).trim() + '…' : ep.t;
+      // text runs from near the rim towards the centre, rotated to the slice
+      html += `<text transform="rotate(${(mid - 90).toFixed(3)}) translate(${R - 10} 0)" text-anchor="end" dominant-baseline="middle"
+        font-family="Figtree, system-ui, sans-serif" font-weight="700" font-size="${font}" fill="${ink}">${esc(label)}</text>`;
+    });
+    html += `<circle r="${R}" fill="none" stroke="#26132a" stroke-width="3"/>`;
+    $('spinner').innerHTML = html;
+    $('count').textContent = `${n} episode${n === 1 ? '' : 's'} on the wheel`;
+  }
+
+  function drawChips() {
+    $('season-chips').innerHTML = SEASONS.map(s =>
+      `<button class="chip" type="button" data-season="${s}" aria-pressed="${on.has(s)}" aria-label="${seasonName(s)}">${chipName(s)}</button>`).join(' ');
+  }
+
+  function applyFilter() {
+    list = ALL.filter(ep => on.has(ep.s));
+    drawChips();
+    drawWheel();
+    $('spin').disabled = !list.length;
+  }
+
+  function showResult(ep) {
+    const box = $('result');
+    box.innerHTML = `
+      <div class="eyebrow">Tonight you're watching</div>
+      <h2>${esc(ep.t)}</h2>
+      <div class="meta">${seasonName(ep.s)} · ${ep.y} · Directed by ${esc(ep.d)}</div>
+      <h3>Connections</h3>
+      <ul class="facts">${ep.f.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <a class="more" href="${wikiFor(ep)}" target="_blank" rel="noopener">More about this episode on Wikipedia ↗</a>`;
+    box.classList.remove('pop'); void box.offsetWidth; box.classList.add('pop');
+  }
+
+  function spin() {
+    if (spinning || !list.length) return;
+    spinning = true; $('spin').disabled = true;
+    const n = list.length, step = 360 / n, pick = Math.floor(Math.random() * n);
+    // land the middle of the picked slice under the pointer, with a little jitter inside the slice
+    const jitter = (Math.random() - 0.5) * step * 0.6;
+    const target = 360 - (pick * step + step / 2) - jitter;
+    const current = ((rotation % 360) + 360) % 360;
+    rotation += 360 * (5 + Math.floor(Math.random() * 3)) + ((target - current + 360) % 360);
+    const g = $('spinner');
+    g.style.transform = `rotate(${rotation}deg)`;
+    const done = () => { g.removeEventListener('transitionend', done); spinning = false; $('spin').disabled = false; showResult(list[pick]); };
+    g.addEventListener('transitionend', done);
+    // safety net if transitionend doesn't fire (e.g. hidden tab)
+    setTimeout(() => { if (spinning) done(); }, 6000);
+  }
+
+  $('spin').addEventListener('click', spin);
+  document.querySelector('.filters').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b || spinning) return;
+    if (b.dataset.quick === 'all') on = new Set(SEASONS);
+    else if (b.dataset.quick === '70s') on = new Set([0, 1, 2, 3, 4, 5, 6, 7]);
+    else if (b.dataset.quick === 'abc') on = new Set([8, 9, 10]);
+    else if (b.dataset.season) {
+      const s = +b.dataset.season;
+      if (on.has(s)) { if (on.size > 1) on.delete(s); } else on.add(s);
+    } else return;
+    applyFilter();
+  });
+
+  const themeBtn = $('theme');
+  const syncTheme = () => themeBtn.setAttribute('aria-pressed', document.documentElement.classList.contains('dark') ? 'true' : 'false');
+  themeBtn.addEventListener('click', () => {
+    const dark = document.documentElement.classList.toggle('dark');
+    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+    syncTheme();
+  });
+  syncTheme();
+
+  applyFilter();
+})();
+</script>
+</body>
+</html>
