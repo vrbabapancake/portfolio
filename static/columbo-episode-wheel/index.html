@@ -82,6 +82,18 @@
   @keyframes pop { 0% { transform: translate(0,6px); opacity: .4; } 100% { transform: none; opacity: 1; } }
   .more { font-size: 15px; }
 
+  /* Case strength meter (1968–1978 episodes) */
+  .court { border: 1.5px solid var(--line); border-radius: var(--radius-button); background: var(--lilac-soft); padding: 14px 16px; margin: 0 0 14px; }
+  .court-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .court-head h3 { margin: 0; }
+  .court-verdict { font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--lilac-text); }
+  .meter { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px; }
+  .meter span { height: 14px; border: 1.5px solid var(--line); border-radius: 4px; background: var(--card); }
+  .meter span.on { background: var(--accent-strong); }
+  html.dark .meter span.on { background: var(--accent); }
+  .meter-scale { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .court p { margin: 0; font-size: 15.5px; }
+
   footer { border-top: 1.5px solid var(--line); margin-top: 44px; padding: 20px 0 32px; color: var(--muted); font-size: 14px; }
 
   @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .result { position: static; } }
@@ -203,6 +215,19 @@
     $('spin').disabled = !list.length;
   }
 
+  // How well would the case against the killer hold up in court? 4 = rock solid, 1 = a defence lawyer's dream
+  const VERDICTS = { 1: 'Weak: a defence lawyer\'s dream', 2: 'Shaky', 3: 'Solid', 4: 'Rock solid' };
+  function courtHTML([score, why]) {
+    return `<div class="court">
+      <div class="court-head"><h3>Would it hold up in court?</h3><span class="court-verdict">${score}/4 · ${VERDICTS[score]}</span></div>
+      <div class="meter" role="meter" aria-valuemin="1" aria-valuemax="4" aria-valuenow="${score}" aria-valuetext="${score} out of 4, ${VERDICTS[score]}">
+        ${[1, 2, 3, 4].map(i => `<span class="${i <= score ? 'on' : ''}"></span>`).join('')}
+      </div>
+      <div class="meter-scale" aria-hidden="true"><span>Weak case</span><span>Rock solid</span></div>
+      <p>${esc(why)}</p>
+    </div>`;
+  }
+
   function showResult(ep) {
     const box = $('result');
     box.innerHTML = `
@@ -211,6 +236,7 @@
       <div class="meta">${seasonName(ep.s)} · ${ep.y} · Directed by ${esc(ep.d)}</div>
       <h3>Connections</h3>
       <ul class="facts">${ep.f.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      ${ep.c ? courtHTML(ep.c) : ''}
       <a class="more" href="${wikiFor(ep)}" target="_blank" rel="noopener">More about this episode on Wikipedia ↗</a>`;
     box.classList.remove('pop'); void box.offsetWidth; box.classList.add('pop');
   }
