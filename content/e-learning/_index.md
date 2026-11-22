@@ -23,6 +23,8 @@ title: "e-Learning"
 
 I build self-paced e-learning courses that teach people how to set up and get the most out of PagerDuty. Each course below is fully interactive: work through the lessons right here, or open it full screen.
 
+<div class="desktop-note" role="note"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#36677a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg><p><strong>Best on a computer.</strong> These interactive courses are built for a larger screen. On a phone they won’t display the way they’re meant to, so open them on a desktop or laptop for the full experience.</p></div>
+
 ### Escalation Policy Basics
 Escalation policies decide who gets notified, in what order, and what happens when nobody answers. This course covers how incidents move through escalation levels, how to choose targets and set timeouts, how to plan on-call handoffs, and which common anti-patterns to avoid.
 

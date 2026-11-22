@@ -112,3 +112,10 @@ body main .lead a.doc-btn.primary { border-color: var(--line); }
   .profile-wrap { width: 160px; height: 182px; }
   .browse-title { font-size: 24px; }
 }
+
+/* "Best on a computer" note on the e-learning and product tour pages */
+.desktop-note { display: flex; gap: 12px; align-items: flex-start; margin: 4px 0 22px; padding: 14px 16px;
+  background: var(--lilac-soft); border: 1.5px solid var(--line); border-radius: var(--radius); color: var(--text); }
+.desktop-note svg { width: 26px; height: 26px; flex-shrink: 0; margin-top: 2px; fill: none; stroke: var(--accent-text); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.desktop-note p { margin: 0; font-size: 16px; line-height: 1.55; }
+.desktop-note strong { font-family: var(--font-display); font-weight: 800; }

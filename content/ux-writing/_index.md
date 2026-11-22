@@ -47,6 +47,8 @@ summary: "I create product tours for new software releases using UX writing best
 
 I create product tours for new software releases using UX writing best practices.
 
+<div class="desktop-note" role="note"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#36677a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg><p><strong>Best on a computer.</strong> These interactive product tours are built for a larger screen. On a phone they won’t display the way they’re meant to, so open them on a desktop or laptop for the full experience.</p></div>
+
 #### PagerDuty AI
 <div class="tour-embed">
 <iframe src="pagerduty-ai-tour/" title="PagerDuty AI interactive product tour" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
