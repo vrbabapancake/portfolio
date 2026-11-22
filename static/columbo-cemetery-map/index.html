@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Columbo at Westwood: A Grave Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4efe4; --ink:#2b2620; --muted:#6f665a; --line:#d8cfbd;
+    --lawn:#dfe6cf; --lawn-edge:#b9c59f; --road:#ece4d3; --bldg:#e3d9c6; --bldg-edge:#b8a98d;
+    --coat:#9a6b2f; --coat-dark:#6e4a1d; --pin-soft:#c9a46a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.45}
+  header{padding:28px 32px 8px;max-width:1280px;margin:0 auto}
+  .back{display:inline-block;margin:0 0 14px;color:var(--coat-dark);font-weight:600;font-size:14px;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;background:#fff}
+  .back:hover{background:#f1e7d4}
+  h1{font-family:"Libre Baskerville",Georgia,serif;font-weight:700;font-size:30px;margin:0 0 6px;letter-spacing:-.01em}
+  .dek{color:var(--muted);margin:0;max-width:760px}
+  .dek em{font-family:"Libre Baskerville",Georgia,serif}
+  main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:24px;padding:16px 32px 32px;max-width:1280px;margin:0 auto}
+  @media (max-width:900px){main{grid-template-columns:1fr;padding:12px 16px 24px}header{padding:20px 16px 4px}}
+  .mapwrap{background:#fbf8f1;border:1px solid var(--line);border-radius:10px;padding:10px;position:relative}
+  svg{width:100%;height:auto;display:block}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--muted);padding:8px 6px 2px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:12px;height:12px;border-radius:50%;display:inline-block}
+  .note{font-size:12.5px;color:var(--muted);padding:2px 6px 4px}
+  .pin{cursor:pointer}
+  .pin circle.dot{fill:var(--coat);stroke:#fff;stroke-width:3;transition:r .15s}
+  .pin.approx circle.dot{fill:#fff;stroke:var(--coat);stroke-width:4;stroke-dasharray:5 3}
+  .pin text{font-size:19px;font-weight:600;fill:var(--ink);paint-order:stroke;stroke:#f6f1e5;stroke-width:6px;stroke-linejoin:round;pointer-events:none}
+  .pin.active circle.dot{fill:var(--coat-dark)}
+  .pin.active text{fill:var(--coat-dark)}
+  .pin:focus{outline:none}
+  .pin:focus-visible circle.dot{stroke:var(--ink)}
+  .ring{fill:none;stroke:var(--coat-dark);stroke-width:3;opacity:0}
+  .pin.active .ring{opacity:1}
+  .area-label{font-size:16px;fill:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+  .ref{cursor:pointer}.reflabel{font-size:16px;font-style:italic;fill:#8d8371;paint-order:stroke;stroke:#f6f1e5;stroke-width:5px;stroke-linejoin:round}.ref.active .reflabel{fill:var(--ink);font-weight:600}.ref.active circle{fill:#6f665a}.toggle{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink);padding:4px 6px 0;cursor:pointer}
+  .street{font-size:16px;fill:#8d8371;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+  aside{display:flex;flex-direction:column;gap:14px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .card h2{font-family:"Libre Baskerville",Georgia,serif;font-size:20px;margin:0 0 2px}
+  .card .role{color:var(--coat-dark);font-weight:600;font-size:13.5px;margin:0 0 10px}
+  .card dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13.5px}
+  .card dt{color:var(--muted)}
+  .card dd{margin:0}
+  .card a{color:var(--coat-dark)}
+  .card .empty{color:var(--muted);font-style:italic;margin:0}
+  .list h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:16px 0 6px;font-weight:600}
+  .list h3:first-child{margin-top:0}
+  .list ul{list-style:none;margin:0;padding:0}
+  .list li button{all:unset;box-sizing:border-box;width:100%;display:flex;justify-content:space-between;gap:10px;padding:7px 8px;border-radius:6px;cursor:pointer;font-size:14px}
+  .list li button:hover,.list li button.active{background:#f1e7d4}
+  .list li button:focus-visible{outline:2px solid var(--coat)}
+  .list .ep{color:var(--muted);font-size:12.5px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
+  .count{font-family:"Libre Baskerville",Georgia,serif;font-size:13px;color:var(--muted)}
+  footer{max-width:1280px;margin:0 auto;padding:0 32px 36px;font-size:12.5px;color:var(--muted)}
+  footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="../programming/">← Programming</a>
+  <h1>Columbo at Westwood</h1>
+  <p class="dek">21 people who worked on <em>Columbo</em> are buried or inurned at Pierce Brothers Westwood Village Memorial Park in Los Angeles. Grounds are traced from an aerial view. Pins come from published grave coordinates, lined up with graves you can see in that view.</p>
+</header>
+
+<main>
+  <section class="mapwrap" aria-label="Cemetery map">
+    <svg id="map" viewBox="95 0 1489 1060" role="img" aria-label="Schematic map of Westwood Village Memorial Park with Columbo-related graves"></svg>
+    <label class="toggle"><input type="checkbox" id="toggleRefs" checked> Show other famous graves (19)</label>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--coat)"></i>Grave at published GPS point</span>
+      <span><i class="sw" style="background:#fff;border:2px dashed var(--coat)"></i>Position estimated</span><span><i class="sw" style="background:#b5ab99"></i>Other famous graves (dashed = approximate)</span>
+      <span><i class="sw" style="background:var(--lawn);border:1px solid var(--lawn-edge)"></i>Lawn</span>
+      <span><i class="sw" style="background:var(--bldg);border:1px solid var(--bldg-edge);border-radius:2px"></i>Building or garden (approximate)</span>
+    </div>
+    <p class="note">North is up. Pin coordinates come from Find a Grave, The Tombstone Tourist and Waymarking. Lined up with the aerial view, reference graves match to within about 4 m. Click a pin or a name to see details.</p>
+  </section>
+
+  <aside>
+    <div class="card" id="detail" aria-live="polite">
+      <p class="empty">Pick someone on the map or in the list.</p>
+    </div>
+    <div class="card list" id="list"></div>
+  </aside>
+</main>
+
+<footer>
+  Sources: Find a Grave memorial pages for each person's plot and GPS; The Tombstone Tourist (Falk, Albert, Ayres); Waymarking (Anderson); Celebrity Graveland (Loggia, Dean Martin); an IMDb Westwood list (Averback); Seeing Stars and Lonely Planet (Marilyn Monroe, Natalie Wood). Some reference graves are placed by eye from the same aerial view. Episode credits are from Wikipedia, IMDb and TV episode guides. Grounds traced from a Google Maps aerial view; building names are approximate. The office staff can help you find a specific grave.
+</footer>
+
+<script>
+const PEOPLE = [
+  // ---- pinned (published GPS) ----
+  {id:"falk", px:911, py:853, name:"Peter Falk", role:"Lt. Columbo (1968–2003)", lat:34.057988, lon:-118.440893, where:"Chapel Garden Estate, right beside the chapel, near Merv Griffin, Farrah Fawcett and Rodney Dangerfield", src:"The Tombstone Tourist", group:"pinned", lx:10, ly:20},
+  {id:"levinson", px:1214, py:722, name:"Richard Levinson", role:"Co-creator of Columbo", lat:34.0580482, lon:-118.440567, where:"Garden of Serenity (new memorial garden)", src:"Find a Grave", group:"pinned", lx:10, ly:16},
+  {id:"leigh", px:1274, py:604, name:"Janet Leigh", role:"“Forgotten Lady” (1975)", lat:34.0581392, lon:-118.4405086, where:"Garden of Serenity, wall niche, next to Jack Klugman", src:"Find a Grave", group:"pinned", lx:10, ly:-8},
+  {id:"cassavetes", px:418, py:190, name:"John Cassavetes", role:"“Étude in Black” (1972)", lat:34.0588117, lon:-118.4414803, where:"Lot 308, beside his wife Gena Rowlands. Find a Grave's GPS point falls in the parking lot, so this pin is estimated: Lot 308 is two lots from Eva Gabor (Lot 306).", src:"Find a Grave (lot number)", group:"approx", dx:0, lx:-10, ly:-8, anchor:"end"},
+  {id:"rowlands", px:440, py:186, name:"Gena Rowlands", role:"“Playback” (1975)", lat:34.0588117, lon:-118.4414803, where:"Lot 308, beside her husband John Cassavetes. Find a Grave's GPS point falls in the parking lot, so this pin is estimated: Lot 308 is two lots from Eva Gabor (Lot 306).", src:"Find a Grave (lot number)", group:"approx", dx:0, lx:10, ly:-8},
+  {id:"albert", px:600, py:486, name:"Eddie Albert", role:"“Dead Weight” (1971)", lat:34.058354, lon:-118.441258, where:"Section D, the central lawn, slightly right of the large tree. Find a Grave lists it as Lot 61.", src:"The Tombstone Tourist / Find a Grave", group:"pinned", lx:-10, ly:-8, anchor:"end"},
+  {id:"ayres", px:332, py:653, name:"Lew Ayres", role:"“Mind Over Mayhem” (1974)", lat:34.058257, lon:-118.441542, where:"Section D, about 20 ft into the lawn. Frank Zappa's unmarked grave is just to his right.", src:"The Tombstone Tourist", group:"pinned", lx:-10, ly:16, anchor:"end"},
+  {id:"basehart", px:837, py:255, name:"Richard Basehart", role:"“Dagger of the Mind” (1972)", lat:34.0585115, lon:-118.4410107, where:"The small central ash garden, three down on the right", src:"Find a Grave", group:"pinned", lx:10, ly:-8},
+  {id:"gleason", px:1133, py:425, name:"Paul Gleason", role:"“Identity Crisis” (1975)", lat:34.0583164, lon:-118.4406742, where:"Section D #40, directly left of Carl Wilson", src:"Find a Grave / Celebrity Graveland", group:"pinned", lx:10, ly:16},
+  {id:"anderson", px:945, py:403, name:"Richard Anderson", role:"“Lady in Waiting” (1971)", lat:34.058367, lon:-118.440883, where:"Grave marker at the Waymarking coordinates (N 34° 03.502′ W 118° 26.453′)", src:"Waymarking", group:"pinned", lx:10, ly:-8},
+  {id:"gazzo", name:"Michael V. Gazzo", role:"“Murder Under Glass” (1978)", where:"Room of Prayer, inside the mausoleum. Published coordinates for the room fall outside the grounds, so he isn't pinned.", src:"La Morgue Files", group:"described"},
+
+  // ---- location described, no coordinates ----
+  {id:"loggia", name:"Robert Loggia", role:"“Now You See Him” (1976)", where:"An outdoor corridor just south of the Sanctuary of Remembrance, on the east side of the park. Top row, on the right as you enter, two spaces from the far end.", src:"Celebrity Graveland", group:"described"},
+  {id:"averback", name:"Hy Averback", role:"Director, “Suitable for Framing” (1971)", where:"Rear flower garden, wall niche", src:"IMDb Westwood list", group:"described"},
+
+  // ---- interred here, plot not published ----
+  {id:"bochner", name:"Lloyd Bochner", role:"“The Most Dangerous Match” (1973)", where:"Interred at Westwood; no published plot location found", src:"Wikipedia; Kurt's Historic Sites", group:"unknown"},
+  {id:"fox", name:"Michael Fox", role:"Dr. Benson in “Étude in Black” & “The Most Dangerous Match”", where:"Interred at Westwood; no published plot location found", src:"Find a Grave memorial #11489706", group:"unknown"},
+  {id:"barry", name:"Patricia Barry", role:"“Playback” (1975)", where:"Interred at Westwood; no published plot location found", src:"Wikipedia; Kurt's Historic Sites", group:"unknown"},
+  {id:"gordon", name:"Don Gordon", role:"“Negative Reaction” (1974)", where:"Interred at Westwood; no published plot location found", src:"Wikipedia", group:"unknown"},
+  {id:"tedrow", name:"Irene Tedrow", role:"“Negative Reaction” (1974)", where:"Interred at Westwood; no published plot location found", src:"Wikipedia", group:"unknown"},
+  {id:"jourdan", name:"Louis Jourdan", role:"“Murder Under Glass” (1978)", where:"Interred at Westwood next to his wife Berthe and their son; plot location not published", src:"WikiTree; Wikipedia", group:"unknown"},
+  {id:"margolin", name:"Janet Margolin", role:"“Murder in Malibu” (1990)", where:"Interred at Westwood; no published plot location found", src:"Wikipedia; Find a Grave #9466", group:"unknown"},
+  {id:"grauman", name:"Walter Grauman", role:"Director, “Murder in Malibu” (1990)", where:"Interred at Westwood; no published plot location found", src:"Find a Grave #143967864", group:"unknown"}
+];
+
+// ---- base: traced from an aerial view; coordinates are image pixels (≈9.7 px per metre, north up) ----
+const NS="http://www.w3.org/2000/svg";
+const svg=document.getElementById("map");
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);(parent||svg).appendChild(e);return e;}
+function txt(s,attrs,parent){const t=el("text",attrs,parent);t.textContent=s;return t;}
+const poly=(pts,attrs)=>el("polygon",Object.assign({points:pts},attrs));
+
+el("rect",{x:0,y:0,width:1584,height:1060,fill:"#efe9dc"});
+// surroundings
+poly("0,0 1000,0 600,150 190,165 0,230",{fill:"#e6e0d2"});
+txt("Parking",{x:640,y:70,class:"area-label","text-anchor":"middle"});
+txt("Ashton Ave",{x:1500,y:215,class:"street","text-anchor":"middle",transform:"rotate(-20 1500 215)"});
+txt("To Wilshire Blvd ↑",{x:260,y:40,class:"street"});
+el("path",{d:"M95,780 L320,740",stroke:"var(--road)","stroke-width":30,fill:"none"});
+txt("← Glendon entrance",{x:110,y:820,class:"street"});
+txt("↑ Glendon Ave (west side)",{x:140,y:520,class:"street",transform:"rotate(-90 140 520)","text-anchor":"middle"});
+txt("Wellworth Ave (south) ↓",{x:1150,y:1045,class:"street","text-anchor":"middle"});
+// grounds outline
+poly("190,165 600,150 1000,40 1120,40 1400,520 1450,620 1440,760 1230,800 840,900 600,1000 330,800 250,700 200,360",{fill:"#f6f1e5",stroke:"#cfc4ad","stroke-width":2});
+// NW garden
+poly("195,170 330,125 420,110 470,150 590,235 265,365 215,350",{fill:"var(--lawn)",stroke:"var(--lawn-edge)","stroke-width":1.5});
+// loop road
+el("path",{d:"M270,385 L600,245 L1000,165 Q1100,150 1130,240 L1180,560 Q1185,595 1150,605 L570,760 Q530,770 480,760 L320,735 Q280,725 280,690 Z",fill:"none",stroke:"var(--road)","stroke-width":30,"stroke-linejoin":"round"});
+// central lawn
+poly("300,410 610,275 1000,190 1095,215 1110,260 1155,545 1135,580 575,735 330,705 305,680",{fill:"var(--lawn)",stroke:"var(--lawn-edge)","stroke-width":1.5});
+txt("Section D · central lawn",{x:760,y:600,class:"area-label","text-anchor":"middle",transform:"rotate(-15 760 600)"});
+// buildings & gardens (approximate)
+const bstyle={fill:"var(--bldg)",stroke:"var(--bldg-edge)","stroke-width":1.5};
+poly("600,160 925,95 945,175 620,250",bstyle);
+txt("Mausoleum",{x:772,y:180,class:"area-label","text-anchor":"middle",transform:"rotate(-11 772 180)"});
+poly("1040,110 1110,70 1385,555 1320,600",bstyle);
+txt("Mausoleums & sanctuaries",{x:1215,y:330,class:"area-label","text-anchor":"middle",transform:"rotate(61 1215 330)"});
+poly("780,745 1170,630 1200,780 840,880",{fill:"#e8ead8",stroke:"var(--lawn-edge)","stroke-dasharray":"5 4"});
+txt("Chapel Garden Estate",{x:1075,y:770,class:"area-label","text-anchor":"middle",transform:"rotate(-15 1075 770)"});
+poly("1190,610 1300,575 1430,640 1420,745 1215,775",{fill:"#e8ead8",stroke:"var(--lawn-edge)","stroke-dasharray":"5 4"});
+txt("Garden of Serenity",{x:1320,y:700,class:"area-label","text-anchor":"middle"});
+poly("600,860 810,830 830,960 620,990",bstyle);
+txt("Chapel (approx.)",{x:715,y:915,class:"area-label","text-anchor":"middle"});
+
+// ---- other famous graves (reference) ----
+const REFS=[
+ {n:"Marilyn Monroe",k:"Actress",x:1070,y:125,a:"end",ap:1,w:"Corridor of Memories, Crypt 24, in the mausoleum near the northeast corner. Placed approximately: published GPS points for this mausoleum fall outside the grounds."},
+ {n:"Dean Martin",k:"Singer & actor",x:1165,y:262,a:"end",ap:1,w:"Sanctuary of Love on the east side: left side, 3 tiers up, 4 spaces from the entrance. Placed approximately."},
+ {n:"Natalie Wood",k:"Actress",x:627,y:387,a:"start",w:"Section D #60, near the centre of the lawn (Find a Grave GPS)."},
+ {n:"Eva Gabor",k:"Actress",x:380,y:175,a:"end",dy:30,w:"Lot 306 (shown on the aerial view)."},
+ {n:"Mel Tormé",k:"Singer",x:570,y:232,a:"start",w:"Shown on the aerial view."},
+ {n:"Jay C. Flippen",k:"Actor",x:970,y:105,a:"start",w:"Shown on the aerial view."},
+ {n:"Shirley Mason",k:"Silent-film actress",x:1110,y:195,a:"start",w:"Shown on the aerial view."},
+ {n:"Hayedeh",k:"Iranian singer",x:822,y:460,a:"start",w:"Shown on the aerial view."},
+ {n:"Richard Dawson",k:"Family Feud host",x:487,y:545,a:"end",w:"Section C, just west of Roy Orbison (shown on the aerial view)."},
+ {n:"Roy Orbison",k:"Singer (unmarked grave)",x:507,y:543,a:"start",dy:22,ap:1,w:"Unmarked grave just east of Richard Dawson. Placed approximately."},
+ {n:"Jim Backus",k:"Actor (Gilligan's Island)",x:392,y:698,a:"start",w:"Section D #203 (shown on the aerial view)."},
+ {n:"Frank Zappa",k:"Musician (unmarked grave)",x:347,y:668,a:"start",dy:8,ap:1,w:"Unmarked grave just to the right of Lew Ayres's marker. Placed approximately."},
+ {n:"Carl Wilson",k:"The Beach Boys",x:1147,y:425,a:"start",dy:-16,ap:1,w:"Directly right of Paul Gleason in Section D. Placed approximately."},
+ {n:"Walter Matthau",k:"Actor",x:1110,y:665,a:"start",w:"Chapel Garden Estate (shown on the aerial view)."},
+ {n:"Jack Lemmon",k:"Actor",x:1060,y:700,a:"start",dy:4,ap:1,w:"Chapel Garden Estate, near his co-star Walter Matthau. Placed approximately."},
+ {n:"Farrah Fawcett",k:"Actress",x:953,y:730,a:"start",w:"Chapel Garden Estate (shown on the aerial view)."},
+ {n:"Billy Wilder",k:"Director",x:921,y:803,a:"start",w:"Chapel Garden Estate, between Carroll O'Connor and Peter Falk (Find a Grave GPS). His marker reads “I'm a writer, but then, nobody's perfect.”"},
+ {n:"Carroll O'Connor",k:"Actor (All in the Family)",x:858,y:825,a:"end",w:"Chapel Garden Estate (shown on the aerial view)."},
+ {n:"Tim Conway",k:"Comedian",x:1255,y:565,a:"end",w:"Shown on the aerial view."}
+];
+const refLayer=el("g",{id:"refs"});
+const refEls={};
+REFS.forEach((r,i)=>{
+  const g=el("g",{class:"ref",tabindex:0,role:"button","aria-label":r.n},refLayer);
+  el("circle",{cx:r.x,cy:r.y,r:7,fill:r.ap?"#f6f1e5":"#b5ab99",stroke:r.ap?"#9f957f":"#fff","stroke-width":r.ap?2.5:2,"stroke-dasharray":r.ap?"3 2":"none"},g);
+  txt(r.n,{x:r.x+(r.a==="end"?-12:12),y:r.y+5+(r.dy||0),"text-anchor":r.a,class:"reflabel"},g);
+  g.addEventListener("click",()=>selectRef(i));
+  g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();selectRef(i);}});
+  refEls[i]=g;
+});
+
+// compass + scale bar (20 m ≈ 194 px)
+const cg=el("g",{transform:"translate(1500 950)"});
+el("circle",{cx:0,cy:0,r:26,fill:"#fff",stroke:"var(--line)"},cg);
+el("path",{d:"M0,-19 L8,6 L0,2 L-8,6 Z",fill:"var(--coat-dark)"},cg);
+txt("N",{x:0,y:-32,"text-anchor":"middle","font-size":17,"font-weight":600,fill:"var(--muted)"},cg);
+const sb=el("g",{transform:"translate(1200 1010)"});
+el("line",{x1:0,y1:0,x2:194,y2:0,stroke:"var(--muted)","stroke-width":3},sb);
+el("line",{x1:0,y1:-7,x2:0,y2:7,stroke:"var(--muted)","stroke-width":3},sb);
+el("line",{x1:194,y1:-7,x2:194,y2:7,stroke:"var(--muted)","stroke-width":3},sb);
+txt("20 m (≈65 ft)",{x:97,y:-12,"text-anchor":"middle","font-size":17,fill:"var(--muted)"},sb);
+
+// ---- pins ----
+const pinEls={};
+PEOPLE.filter(p=>p.px).forEach(p=>{
+  const g=el("g",{class:"pin"+(p.group==="approx"?" approx":""),tabindex:0,role:"button","aria-label":p.name+", "+p.role});
+  const x=p.px, y=p.py, k=1.6;
+  el("circle",{class:"ring",cx:x,cy:y,r:20},g);
+  el("circle",{class:"dot",cx:x,cy:y,r:11},g);
+  txt(p.name,{x:x+(p.lx||10)*k,y:y+(p.ly||4)*k,"text-anchor":p.anchor||"start"},g);
+  g.addEventListener("click",()=>select(p.id));
+  g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(p.id);}});
+  pinEls[p.id]=g;
+});
+
+// ---- list ----
+const groups=[
+  ["pinned","On the map",p=>p.group==="pinned"||p.group==="approx"],
+  ["described","Location described, no coordinates",p=>p.group==="described"],
+  ["unknown","Buried here, exact spot not found",p=>p.group==="unknown"]
+];
+const list=document.getElementById("list");
+const btns={};
+groups.forEach(([key,label,fn])=>{
+  const items=PEOPLE.filter(fn);
+  const h=document.createElement("h3");h.innerHTML=label+' <span class="count">('+items.length+')</span>';list.appendChild(h);
+  const ul=document.createElement("ul");
+  items.forEach(p=>{
+    const li=document.createElement("li");const b=document.createElement("button");
+    b.innerHTML='<span>'+p.name+'</span><span class="ep">'+p.role+'</span>';
+    b.addEventListener("click",()=>select(p.id));
+    btns[p.id]=b;li.appendChild(b);ul.appendChild(li);
+  });
+  list.appendChild(ul);
+});
+
+// ---- detail ----
+const detail=document.getElementById("detail");
+function select(id){
+  const p=PEOPLE.find(q=>q.id===id);
+  Object.values(refEls).forEach(g=>g.classList.remove("active"));
+  Object.values(pinEls).forEach(g=>g.classList.remove("active"));
+  Object.values(btns).forEach(b=>b.classList.remove("active"));
+  if(pinEls[id]){pinEls[id].classList.add("active");pinEls[id].parentNode.appendChild(pinEls[id]);}
+  btns[id].classList.add("active");
+  let rows='<dt>Where</dt><dd>'+p.where+'</dd>';
+  if(p.lat){
+    rows+='<dt>GPS</dt><dd>'+p.lat.toFixed(6)+', '+p.lon.toFixed(6)+'</dd>';
+    rows+='<dt>Open</dt><dd><a href="https://www.google.com/maps?q='+p.lat+','+p.lon+'" target="_blank" rel="noopener">Google Maps ↗</a></dd>';
+  }
+  rows+='<dt>Source</dt><dd>'+p.src+'</dd>';
+  detail.innerHTML='<h2>'+p.name+'</h2><p class="role">'+p.role+'</p><dl>'+rows+'</dl>';
+}
+function selectRef(i){
+  const r=REFS[i];
+  Object.values(pinEls).forEach(g=>g.classList.remove("active"));
+  Object.values(btns).forEach(b=>b.classList.remove("active"));
+  Object.values(refEls).forEach(g=>g.classList.remove("active"));
+  refEls[i].classList.add("active");
+  detail.innerHTML='<h2>'+r.n+'</h2><p class="role" style="color:var(--muted)">'+r.k+' · not in Columbo, shown for reference</p><dl><dt>Where</dt><dd>'+r.w+'</dd></dl>';
+}
+document.getElementById("toggleRefs").addEventListener("change",e=>{document.getElementById("refs").style.display=e.target.checked?"":"none";});
+select("falk");
+</script>
+</body>
+</html>

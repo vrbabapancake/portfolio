@@ -42,3 +42,11 @@ Can't decide which Columbo to watch? Spin the wheel to pick one of all 69 episod
 <div class="game-buttons">
   <a href="../columbo-episode-wheel/">Spin the wheel →</a>
 </div>
+
+### Columbo Cemetery Map
+
+Peter Falk is buried at Westwood Village Memorial Park in Los Angeles, and so are 20 other people who worked on Columbo, from co-creator Richard Levinson to killers like Janet Leigh and John Cassavetes. This interactive map pins every grave with a published location and lists the rest, with famous neighbours like Marilyn Monroe and Billy Wilder shown for reference.
+
+<div class="game-buttons">
+  <a href="../columbo-cemetery-map/">See the map →</a>
+</div>
