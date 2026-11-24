@@ -8,9 +8,9 @@ Since June 2024, I’ve been a Senior Technical Content Writer at PagerDuty. I o
 
 **Highlights**
 
-- **Built AI pipelines for docs.** I created AI pipelines and Claude skills that automate drafting, review, and maintenance, including turning Jira requests into review-ready drafts.
+- **[Built AI pipelines for docs.](../what-i-currently-do/)** I created AI pipelines and Claude skills that automate drafting, review, and maintenance, including turning Jira requests into review-ready drafts.
 - **Made style consistent at scale.** I encoded PagerDuty’s house style into reusable skills and linter rules, so every article follows the same standards.
-- **Moved the docs to docs-as-code.** I helped migrate the docs platform from ReadMe.io to a GitHub-based Next.js site, improving performance and making the content easier for AI assistants to find.
+- **[Moved the docs to docs-as-code.](../what-i-currently-do/#moving-our-docs-to-docs-as-code)** I helped migrate the docs platform from ReadMe.io to a GitHub-based Next.js site, improving performance and making the content easier for AI assistants to find.
 - **Wrote for what users actually ask.** I use AI query data to find content gaps, prioritizing the questions users ask over what they search for.
 - **Documented major releases.** I partner with product managers and engineering teams to document major product launches.
 
