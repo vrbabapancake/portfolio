@@ -129,7 +129,6 @@ pre.code .c{color:var(--muted);font-style:italic}
 .kv dt{color:var(--muted)}
 .kv dd{margin:0;font-family:var(--mono);font-size:13px}
 
-.stepper{display:flex;gap:8px;margin:16px 0 8px;flex-wrap:wrap}
 .step-dot{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--hairline-strong);background:var(--surface);font-family:var(--mono);font-size:13px;cursor:pointer}
 .step-dot[aria-current="step"]{background:var(--ink);color:#fff;border-color:var(--ink)}
 .step-text{min-height:84px}
@@ -188,6 +187,30 @@ pre.code .c{color:var(--muted);font-style:italic}
 @keyframes dash{to{stroke-dashoffset:-28}}
 @media (prefers-reduced-motion:reduce){.flow{animation:none}.lesson.active{animation:none}}
 
+
+.flip{display:block;width:100%;height:190px;padding:0;border:0;background:none;cursor:pointer;perspective:900px;text-align:left}
+.flip-inner{position:relative;display:block;width:100%;height:100%;transition:transform .5s ease;transform-style:preserve-3d}
+.flip[aria-pressed="true"] .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;padding:22px 24px;background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-lg);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.flip:hover .flip-face{border-color:var(--hairline-strong)}
+.flip-back{transform:rotateY(180deg);background:var(--surface-2)}
+.flip-big{font-family:var(--mono);font-size:26px;color:var(--ink);margin-top:auto}
+.flip-hint{font-size:13px;color:var(--muted);margin-top:auto}
+.flip-text{font-size:15px;line-height:1.55;color:var(--text)}
+@media (prefers-reduced-motion:reduce){.flip-inner{transition:none}}
+.step-nav{display:flex;align-items:center;gap:8px;margin:16px 0 8px;flex-wrap:wrap}
+.step-arrow{width:34px;height:34px;border-radius:50%;border:1px solid var(--hairline-strong);background:var(--surface);cursor:pointer;font-size:16px;line-height:1}
+.step-arrow:hover:not([disabled]){background:var(--surface-2)}
+.step-arrow[disabled]{opacity:.35;cursor:not-allowed}
+.step-hint{font-size:13px;color:var(--muted);margin-left:8px}
+.usecase{display:grid;grid-template-columns:1fr 220px;gap:20px;align-items:center;background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:22px 24px;margin:0 0 16px}
+.usecase h4{margin:4px 0 8px;font-size:18px;font-weight:600;color:var(--ink)}
+.usecase p{margin:0}
+.usecase svg{width:100%;height:auto}
+.also{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 8px}
+.also div{border:1px solid var(--hairline);border-radius:var(--r);padding:14px 16px;font-size:15px}
+.also strong{display:block;font-weight:600;color:var(--ink);margin-bottom:2px}
+@media (max-width:900px){.usecase,.also{grid-template-columns:1fr}.usecase svg{max-width:260px}}
 /* style guide */
 .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:12px 0 8px}
 .sw{border:1px solid var(--hairline);border-radius:var(--r);overflow:hidden;background:var(--surface);font-size:13px}
@@ -252,6 +275,31 @@ table.spec th{font-weight:500;color:var(--muted);font-size:13px}
     <div><span class="label">Level</span><strong>Beginner</strong></div>
     <div><span class="label">You'll need</span><strong>Two devices and a free Tailscale account</strong></div>
   </div>
+  <h3>A good first tailnet</h3>
+  <div class="usecase">
+    <div>
+      <span class="label">The scenario in this course</span>
+      <h4>Reach your home server from anywhere</h4>
+      <p>You keep photos and files on a small server at home. You want to open them from your laptop at a café or your phone on mobile data, without opening ports on your router or running your own VPN server. That's a tailnet with three devices, and it's what you'll build here.</p>
+    </div>
+    <svg viewBox="0 0 220 150" aria-hidden="true">
+      <rect x="8" y="98" width="62" height="38" rx="3" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 140 H76" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="39" y="122" text-anchor="middle" font-size="10" fill="#706e6d">café</text>
+      <rect x="160" y="92" width="30" height="50" rx="5" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M170 136 H180" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="175" y="119" text-anchor="middle" font-size="9" fill="#706e6d">LTE</text>
+      <rect x="86" y="10" width="48" height="56" rx="4" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M96 26 H124 M96 36 H124" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="110" cy="52" r="3" fill="#3b82f6"/>
+      <text x="110" y="80" text-anchor="middle" font-size="10" fill="#706e6d">home</text>
+      <path d="M58 94 Q70 56 84 44" stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="4 5" stroke-linecap="round"/>
+      <path d="M166 88 Q152 58 136 44" stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="4 5" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="also">
+    <div><strong>SSH into a home machine</strong>Log in to a Raspberry Pi or desktop while you're away.</div>
+    <div><strong>Test on your phone</strong>Open a dev server running on your laptop from your phone.</div>
+    <div><strong>Share with family</strong>Give a few people access to a self-hosted app.</div>
+  </div>
+  <p style="font-size:14px;color:var(--muted)">Other common first tailnets. Same steps, different devices.</p>
+
   <h3>By the end, you'll be able to</h3>
   <ol class="objectives">
     <li><span class="n">01</span><span>Explain what a tailnet is and how devices in it are addressed.</span></li>
@@ -311,9 +359,20 @@ table.spec th{font-weight:500;color:var(--muted);font-size:13px}
   </div>
 
   <h3>Two ways to find a device</h3>
+  <p style="color:var(--muted);font-size:15px">Select a card to flip it.</p>
   <div class="grid-2">
-    <div class="card"><div class="label">Tailscale IP</div><p style="margin:8px 0 0">Every device gets an address starting with <code>100.</code>, from a range set aside so it won't clash with your home or office network. It stays the same when the device changes networks.</p></div>
-    <div class="card"><div class="label">MagicDNS name</div><p style="margin:8px 0 0">Every device also gets a name, like <code>home-nas</code>. You can use it instead of the IP. MagicDNS is on by default for new tailnets.</p></div>
+    <button type="button" class="flip" aria-pressed="false" aria-label="Tailscale IP. Select to show the explanation.">
+      <span class="flip-inner">
+        <span class="flip-face flip-front"><span class="label">Tailscale IP</span><span class="flip-big">100.64.7.21</span><span class="flip-hint">Flip ↻</span></span>
+        <span class="flip-face flip-back"><span class="label">Tailscale IP</span><span class="flip-text">Every device gets an address starting with <code>100.</code>, from a range set aside so it won't clash with your home or office network. It stays the same when the device changes networks.</span></span>
+      </span>
+    </button>
+    <button type="button" class="flip" aria-pressed="false" aria-label="MagicDNS name. Select to show the explanation.">
+      <span class="flip-inner">
+        <span class="flip-face flip-front"><span class="label">MagicDNS name</span><span class="flip-big">home-nas</span><span class="flip-hint">Flip ↻</span></span>
+        <span class="flip-face flip-back"><span class="label">MagicDNS name</span><span class="flip-text">Every device also gets a name, like <code>home-nas</code>. You can use it instead of the IP. MagicDNS is on by default for new tailnets.</span></span>
+      </span>
+    </button>
   </div>
   <div class="nav-row"><button class="btn btn-ghost" data-prev>← Back</button><button class="btn btn-primary" data-next>Continue →</button></div>
 </section>
@@ -350,11 +409,14 @@ table.spec th{font-weight:500;color:var(--muted);font-size:13px}
         <g id="f2-keyB"><circle cx="516" cy="236" r="5" fill="#3b82f6"/><text x="528" y="240" font-size="10" class="mono" fill="#706e6d">PRIVATE KEY STAYS</text></g></g>
       <text x="360" y="290" text-anchor="middle" font-size="12" fill="#706e6d" id="f2-note">Your traffic never passes through the coordination server.</text>
     </svg>
-    <div class="stepper" role="group" aria-label="Diagram steps">
-      <button class="step-dot" data-step="0" aria-current="step">1</button>
-      <button class="step-dot" data-step="1">2</button>
-      <button class="step-dot" data-step="2">3</button>
-      <button class="step-dot" data-step="3">4</button>
+    <div class="step-nav" role="group" aria-label="Diagram steps" id="stepNav">
+      <button class="step-arrow" id="stepPrev" type="button" aria-label="Previous step">←</button>
+      <button class="step-dot" data-step="0" aria-current="step" aria-label="Step 1">1</button>
+      <button class="step-dot" data-step="1" aria-label="Step 2" tabindex="-1">2</button>
+      <button class="step-dot" data-step="2" aria-label="Step 3" tabindex="-1">3</button>
+      <button class="step-dot" data-step="3" aria-label="Step 4" tabindex="-1">4</button>
+      <button class="step-arrow" id="stepNext" type="button" aria-label="Next step">→</button>
+      <span class="step-hint">or use the ← → arrow keys</span>
     </div>
     <div class="step-text" id="stepText" aria-live="polite"></div>
     <div class="figcap"><span class="label">Fig 2</span><span>The control plane shares keys and rules. The data plane carries your traffic.</span></div>
@@ -700,11 +762,38 @@ pong from phone (100.88.12.40) via <span class="ok">203.0.113.7:41641</span> in 
   const ids=['f2-server','f2-up','f2-uplabel','f2-down','f2-direct','f2-a','f2-b','f2-keyA','f2-keyB'];
   function step(n){
     ids.forEach(id=>{const el=document.getElementById(id);const on=steps[n].lit.includes(id);el.classList.toggle('dim',!on);el.classList.toggle('lit',on)});
-    document.querySelectorAll('.step-dot').forEach(d=>d.toggleAttribute('aria-current',+d.dataset.step===n)||null);
-    document.querySelectorAll('.step-dot').forEach(d=>{if(+d.dataset.step===n)d.setAttribute('aria-current','step')});
+    curStep=n;
+    document.querySelectorAll('.step-dot').forEach(d=>{const on=+d.dataset.step===n;if(on){d.setAttribute('aria-current','step')}else{d.removeAttribute('aria-current')}d.tabIndex=on?0:-1});
+    document.getElementById('stepPrev').disabled=n===0;
+    document.getElementById('stepNext').disabled=n===steps.length-1;
     document.getElementById('stepText').innerHTML='<h4>Step '+(n+1)+' · '+steps[n].h+'</h4><p style="margin:0">'+steps[n].p+'</p>';
   }
+  let curStep=0;
   document.querySelectorAll('.step-dot').forEach(d=>d.addEventListener('click',()=>step(+d.dataset.step)));
+  document.getElementById('stepPrev').addEventListener('click',()=>step(Math.max(curStep-1,0)));
+  document.getElementById('stepNext').addEventListener('click',()=>step(Math.min(curStep+1,steps.length-1)));
+  function stepKey(e){
+    let n=null;
+    if(e.key==='ArrowRight')n=Math.min(curStep+1,steps.length-1);
+    else if(e.key==='ArrowLeft')n=Math.max(curStep-1,0);
+    else if(e.key==='Home')n=0;
+    else if(e.key==='End')n=steps.length-1;
+    if(n===null)return;
+    e.preventDefault();step(n);
+    if(document.activeElement&&document.activeElement.classList.contains('step-dot'))document.querySelector('.step-dot[data-step="'+n+'"]').focus();
+  }
+  document.getElementById('stepNav').addEventListener('keydown',stepKey);
+  document.addEventListener('keydown',e=>{
+    if(!document.getElementById('l2').classList.contains('active'))return;
+    const t=e.target;if(t.closest&&(t.closest('#stepNav')||t.matches('input,textarea,select')))return;
+    stepKey(e);
+  });
+  // flip cards
+  document.querySelectorAll('.flip').forEach(f=>f.addEventListener('click',()=>{
+    const on=f.getAttribute('aria-pressed')!=='true';f.setAttribute('aria-pressed',on);
+    const name=f.querySelector('.flip-front .label').textContent;
+    f.setAttribute('aria-label',name+(on?'. Showing the explanation. Select to flip back.':'. Select to show the explanation.'));
+  }));
   step(0);
 
   // ---- Lesson 3: scenarios ----
