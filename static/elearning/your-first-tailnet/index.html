@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your first tailnet · Concept e-learning module</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Design tokens — matched to tailscale.com/docs
+   White page, near-black text, hairline borders, blue only for links
+   and traffic paths. Link blue is darkened from the docs' #3B82F6
+   (3.7:1) to #2563EB (5.2:1) so every text pair passes WCAG 2.1 AA.
+   ============================================================ */
+:root{
+  --canvas:#ffffff;
+  --surface:#ffffff;
+  --surface-2:#faf9f8;   /* code, quiet panels (docs code background) */
+  --surface-3:#f3f1f0;   /* hover */
+  --ink:#181717;         /* headings, outlines */
+  --text:#2e2d2d;        /* body, 13.7:1 */
+  --muted:#706e6d;       /* secondary text, 5.1:1 */
+  --hairline:#eeebea;
+  --hairline-strong:#d9d5d3;
+  --brand:#3b82f6;       /* docs blue: diagrams and large shapes only */
+  --brand-strong:#181717;/* primary button: black, like the docs header CTA */
+  --brand-text:#2563eb;  /* links and blue text */
+  --brand-soft:rgba(59,130,246,.08);
+  --success:#15803d;  --success-soft:rgba(21,128,61,.08);
+  --warning:#b45309;  --warning-soft:rgba(180,83,9,.10);
+  --error:#dc2626;    --error-soft:rgba(220,38,38,.07);
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"SF Mono",SFMono-Regular,ui-monospace,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+  --r-sm:4px; --r:6px; --r-lg:8px;
+  --sidebar:290px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--font);font-size:16px;line-height:1.55;color:var(--text);letter-spacing:-.01em;background:var(--canvas);-webkit-font-smoothing:antialiased}
+a{color:var(--brand-text)}
+a:hover{color:var(--ink)}
+:focus-visible{outline:3px solid rgba(59,130,246,.55);outline-offset:2px;border-radius:4px}
+button{font:inherit;color:inherit}
+code,kbd,pre{font-family:var(--mono);font-size:.875em}
+.label{font-family:var(--font);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+:not(pre)>code{background:var(--surface-2);border:1px solid var(--hairline);border-radius:4px;padding:1px 4px;color:var(--text)}
+
+/* ---------- layout ---------- */
+.app{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--hairline);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:auto}
+.side-head{padding:28px 24px 20px;border-bottom:1px solid var(--hairline)}
+.side-head h1{font-size:22px;font-weight:600;letter-spacing:-.02em;color:var(--ink);line-height:1.2;margin:8px 0 18px}
+.progress{height:4px;background:var(--surface-3);border-radius:4px;overflow:hidden}
+.progress > div{height:100%;background:var(--brand);width:0;transition:width .4s ease}
+.progress-text{font-size:13px;color:var(--muted);margin-top:8px}
+.lessons{list-style:none;margin:0;padding:12px 12px 0;counter-reset:l}
+.lessons li{margin:2px 0}
+.lessons button{width:100%;text-align:left;background:none;border:0;border-radius:var(--r-sm);padding:10px 12px;display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:15px;line-height:1.35}
+.lessons button:hover{background:var(--surface-2)}
+.lessons button[aria-current="page"]{background:var(--surface-2);font-weight:600;color:var(--ink)}
+.lesson-mark{flex:0 0 22px;height:22px;border-radius:50%;border:1.5px solid var(--hairline-strong);display:grid;place-items:center;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:-1px}
+.lessons button[aria-current="page"] .lesson-mark{border-color:var(--ink);color:var(--ink)}
+.lessons .done .lesson-mark{background:var(--ink);border-color:var(--ink);color:#fff}
+.side-foot{margin-top:auto;padding:16px 24px 24px;border-top:1px solid var(--hairline);font-size:13px;color:var(--muted)}
+.side-foot button{background:none;border:1px solid var(--hairline-strong);border-radius:var(--r-sm);padding:8px 12px;cursor:pointer;width:100%;text-align:left;margin-bottom:12px;font-size:14px;color:var(--ink)}
+.side-foot button:hover,.side-foot button[aria-current="page"]{background:var(--surface-2)}
+
+main{flex:1;min-width:0}
+.topbar{display:none;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--hairline);background:var(--surface);position:sticky;top:0;z-index:20}
+.menu-btn{border:1px solid var(--hairline-strong);background:var(--surface);border-radius:var(--r-sm);padding:6px 10px;cursor:pointer}
+.content{max-width:820px;margin:0 auto;padding:56px 40px 96px}
+.lesson{display:none}
+.lesson.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.lesson h2{font-size:36px;font-weight:500;letter-spacing:-.02em;line-height:1.15;margin:10px 0 14px;color:var(--ink)}
+.lesson h3{font-size:20px;font-weight:600;letter-spacing:-.02em;margin:40px 0 8px;color:var(--ink)}
+.lede{font-size:18px;color:var(--muted);margin:0 0 28px;max-width:640px}
+p{margin:0 0 16px}
+ul.plain{padding-left:20px;margin:0 0 16px}
+ul.plain li{margin:6px 0}
+
+/* ---------- components ---------- */
+.card{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:24px}
+.figure{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:20px;margin:24px 0}
+.figure svg{width:100%;height:auto;display:block}
+.figcap{font-size:14px;color:var(--muted);margin-top:12px;display:flex;gap:10px}
+.figcap .label{flex-shrink:0;padding-top:2px}
+.callout{position:relative;border:1px solid var(--hairline);background:var(--surface);border-radius:var(--r-sm);padding:12px 16px 12px 44px;margin:24px 0}
+.callout::before{content:"i";position:absolute;left:14px;top:14px;width:18px;height:18px;border:1.5px solid var(--text);border-radius:50%;font:600 11px/15px var(--font);text-align:center;color:var(--text)}
+.callout p:last-child{margin:0}
+.callout .label{display:block;margin-bottom:4px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.objectives{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.objectives li{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r);padding:14px 16px}
+.objectives .n{font-family:var(--mono);font-size:12px;color:var(--brand-text);padding-top:3px}
+.meta{display:flex;gap:24px;flex-wrap:wrap;margin:0 0 32px}
+.meta div{font-size:14px}
+.meta strong{display:block;font-weight:500;font-size:15px}
+
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:var(--r);padding:12px 20px;border:1px solid transparent;cursor:pointer;font-weight:500;font-size:15px;text-decoration:none;transition:background .15s}
+.btn-primary{background:var(--brand-strong);color:#fff}
+.btn-primary:hover{background:#3a3736;color:#fff}
+.btn-secondary{background:var(--ink);color:#fff}
+.btn-secondary:hover{background:#3a3736}
+.btn-ghost{background:var(--surface);border-color:var(--hairline-strong);color:var(--ink)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.nav-row{display:flex;justify-content:space-between;gap:12px;margin-top:56px;padding-top:24px;border-top:1px solid var(--hairline)}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.chip{border:1px solid var(--hairline-strong);background:var(--surface);border-radius:999px;padding:8px 14px;cursor:pointer;font-size:14px}
+.chip:hover{background:var(--surface-2)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+
+pre.term{background:var(--surface-2);color:var(--text);border:1px solid #e5e7eb;border-radius:var(--r);padding:16px 18px;overflow:auto;margin:12px 0;line-height:1.55;position:relative}
+pre.term .p{color:var(--muted);user-select:none}
+pre.term .hl{color:var(--warning)}
+pre.term .ok{color:var(--success)}
+.copy{position:absolute;top:10px;right:10px;background:var(--surface);border:1px solid var(--hairline-strong);color:var(--text);border-radius:6px;padding:3px 9px;font-family:var(--font);font-size:12px;cursor:pointer}
+.copy:hover{background:var(--surface-3)}
+pre.code{background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--r);padding:16px 18px;overflow:auto;margin:12px 0;line-height:1.6}
+pre.code .k{color:var(--brand-text)}
+pre.code .c{color:var(--muted);font-style:italic}
+
+.info-card{background:var(--surface-2);border-radius:var(--r);padding:16px 18px;margin-top:12px;min-height:96px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 16px;font-size:14px;margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-family:var(--mono);font-size:13px}
+
+.stepper{display:flex;gap:8px;margin:16px 0 8px;flex-wrap:wrap}
+.step-dot{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--hairline-strong);background:var(--surface);font-family:var(--mono);font-size:13px;cursor:pointer}
+.step-dot[aria-current="step"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.step-text{min-height:84px}
+.step-text h4{margin:0 0 4px;font-size:16px;font-weight:500}
+
+.task{display:flex;gap:14px;align-items:flex-start;background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r);padding:18px 20px;margin:12px 0}
+.task input{width:20px;height:20px;accent-color:var(--ink);margin-top:3px;flex-shrink:0}
+.task h4{margin:0 0 6px;font-size:16px;font-weight:500}
+.task p{margin:0 0 8px;font-size:15px}
+.task.checked{background:var(--surface-2)}
+.task.checked h4{text-decoration:line-through;text-decoration-color:var(--hairline-strong)}
+.task{position:relative}
+.task-head{min-height:96px;padding-right:152px}
+.task-art{position:absolute;top:18px;right:20px;width:132px;height:96px;background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--r)}
+.task.checked .task-art{opacity:.55}
+@media (max-width:700px){.task-art{display:none}.task-head{min-height:0;padding-right:0}}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--hairline);margin:8px 0 0}
+.tab{background:none;border:0;padding:8px 12px;cursor:pointer;font-size:14px;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--muted)}
+.tab[aria-selected="true"]{border-bottom-color:var(--ink);color:var(--ink);font-weight:500}
+
+.scenario{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r);padding:18px 20px;margin:12px 0}
+.scenario-q{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+.scenario-q p{margin:0;flex:1;min-width:240px}
+.scenario-q code{background:var(--surface-2);padding:1px 6px;border-radius:4px}
+.choice-row{display:flex;gap:8px}
+.choice{border:1px solid var(--hairline-strong);background:var(--surface);border-radius:var(--r-sm);padding:7px 14px;cursor:pointer;font-size:14px;font-weight:500}
+.choice:hover{background:var(--surface-2)}
+.feedback{margin-top:12px;padding:12px 14px;border-radius:var(--r-sm);font-size:15px;display:none}
+.feedback.show{display:block}
+.feedback.right{background:var(--success-soft);color:#1f5a3a}
+.feedback.wrong{background:var(--error-soft);color:#991b1b}
+.feedback strong{font-weight:600}
+
+.q{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:22px 24px;margin:16px 0}
+.q legend{font-weight:500;font-size:17px;padding:0;margin-bottom:12px}
+.q fieldset{border:0;margin:0;padding:0}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--hairline);border-radius:var(--r-sm);margin:8px 0;cursor:pointer;font-size:15px}
+.opt:hover{background:var(--surface-2)}
+.opt input{accent-color:var(--ink);margin-top:4px}
+.opt.correct{border-color:var(--success);background:var(--success-soft)}
+.opt.incorrect{border-color:var(--error);background:var(--error-soft)}
+.score{text-align:center;padding:32px}
+.score .big{font-size:56px;font-weight:500;color:var(--ink);letter-spacing:-.03em;line-height:1}
+
+/* diagram helpers */
+.dg text{font-family:var(--font)}
+.dg .mono{font-family:var(--mono);letter-spacing:.08em}
+.dev{cursor:pointer}
+.dev rect.box{transition:stroke .2s, fill .2s}
+.dev:hover rect.box,.dev:focus rect.box{fill:var(--surface-3)}
+.dev.sel rect.box{stroke:var(--brand);stroke-width:2.5}
+.dev:focus{outline:none}
+.dim{opacity:.18;transition:opacity .3s}
+.lit{opacity:1;transition:opacity .3s}
+.flow{stroke-dasharray:6 8;animation:dash 1.1s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-28}}
+@media (prefers-reduced-motion:reduce){.flow{animation:none}.lesson.active{animation:none}}
+
+/* style guide */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:12px 0 8px}
+.sw{border:1px solid var(--hairline);border-radius:var(--r);overflow:hidden;background:var(--surface);font-size:13px}
+.sw .chipc{height:64px;border-bottom:1px solid var(--hairline)}
+.sw div.t{padding:10px 12px}
+.sw strong{display:block;font-weight:600;color:var(--ink)}
+.sw span{font-family:var(--mono);font-size:12px;color:var(--muted)}
+table.spec{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
+table.spec th,table.spec td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--hairline);vertical-align:top}
+table.spec th{font-weight:500;color:var(--muted);font-size:13px}
+.do-dont{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.do-dont > div{border-radius:var(--r);padding:14px 16px;font-size:15px}
+.do-dont .do{background:var(--success-soft)}
+.do-dont .dont{background:var(--error-soft)}
+.do-dont .label{display:block;margin-bottom:6px}
+
+.disclaimer{font-size:13px;color:var(--muted);background:var(--surface-2);border-radius:var(--r-sm);padding:10px 14px;margin:0 0 32px}
+
+/* responsive */
+@media (max-width:900px){
+  .sidebar{position:fixed;left:0;top:0;z-index:40;transform:translateX(-100%);transition:transform .25s;box-shadow:0 0 0 100vmax rgba(24,23,23,0)}
+  .sidebar.open{transform:none;box-shadow:0 0 0 100vmax rgba(24,23,23,.35)}
+  .topbar{display:flex}
+  .content{padding:32px 20px 72px}
+  .lesson h2{font-size:32px}
+  .grid-2,.do-dont{grid-template-columns:1fr}
+  .kv{grid-template-columns:120px 1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar" aria-label="Course navigation">
+    <div class="side-head">
+      <div class="label">Concept module</div>
+      <h1>Your first tailnet</h1>
+      <div class="progress" role="progressbar" aria-label="Course progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="bar"></div></div>
+      <div class="progress-text" id="progressText">0% complete</div>
+    </div>
+    <ol class="lessons" id="lessonList"></ol>
+    <div class="side-foot">
+      <button type="button" id="guideBtn">Design notes &amp; style guide →</button>
+      A concept piece by Mark Philp. Not an official Tailscale course and not affiliated with Tailscale.
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn" aria-controls="sidebar" aria-expanded="false">☰ Lessons</button>
+      <span style="font-weight:500">Your first tailnet</span>
+    </div>
+    <div class="content" id="content">
+
+<!-- ================= 0. WELCOME ================= -->
+<section class="lesson" data-title="Welcome" id="l0">
+  <div class="label">Start here</div>
+  <h2>Your first tailnet</h2>
+  <p class="lede">Connect two of your devices into a private network, understand what happens underneath, and decide who can reach what.</p>
+  <p class="disclaimer">Concept e-learning module by Mark Philp, built from Tailscale's public documentation as a portfolio piece. It's not an official Tailscale course.</p>
+  <div class="meta">
+    <div><span class="label">Time</span><strong>About 20 minutes</strong></div>
+    <div><span class="label">Level</span><strong>Beginner</strong></div>
+    <div><span class="label">You'll need</span><strong>Two devices and a free Tailscale account</strong></div>
+  </div>
+  <h3>By the end, you'll be able to</h3>
+  <ol class="objectives">
+    <li><span class="n">01</span><span>Explain what a tailnet is and how devices in it are addressed.</span></li>
+    <li><span class="n">02</span><span>Describe how the coordination server and your devices split the work.</span></li>
+    <li><span class="n">03</span><span>Tell a direct connection from a relayed one, and check which one you have.</span></li>
+    <li><span class="n">04</span><span>Connect two devices and reach one from the other by name.</span></li>
+    <li><span class="n">05</span><span>Read and write a simple access rule.</span></li>
+  </ol>
+  <div class="nav-row"><span></span><button class="btn btn-primary" data-next>Start the course →</button></div>
+</section>
+
+<!-- ================= 1. WHAT IS A TAILNET ================= -->
+<section class="lesson" data-title="What is a tailnet?" id="l1">
+  <div class="label">Lesson 1</div>
+  <h2>What is a tailnet?</h2>
+  <p class="lede">A tailnet is your own private network. Every device you add can reach the others, wherever they are.</p>
+  <p>Your laptop might be in a café, your phone on mobile data and your file server at home. Normally, those three can't reach each other without opening ports or setting up a VPN server. Once they join the same tailnet, they behave as if they were on one network.</p>
+
+  <div class="figure">
+    <div class="label" style="margin-bottom:10px">Try it · Select a device</div>
+    <svg class="dg" viewBox="0 0 720 330" role="group" aria-label="Diagram: three devices in different places joined into one tailnet">
+      <defs>
+        <pattern id="dots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="rgba(24,23,23,.10)"/></pattern>
+      </defs>
+      <rect x="50" y="40" width="620" height="250" rx="40" fill="url(#dots)" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4 6"/>
+      <rect x="296" y="31" width="128" height="18" fill="#fff"/>
+      <text x="360" y="44" text-anchor="middle" class="mono" font-size="11" fill="#2563eb">YOUR TAILNET</text>
+      <g stroke="#3b82f6" stroke-width="2" fill="none">
+        <line x1="165" y1="225" x2="360" y2="105"/><line x1="360" y1="105" x2="555" y2="225"/><line x1="165" y1="225" x2="555" y2="225"/>
+      </g>
+      <!-- laptop -->
+      <g class="dev" data-dev="laptop" tabindex="0" role="button" aria-label="Laptop">
+        <rect class="box" x="85" y="190" width="160" height="70" rx="12" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+        <rect x="103" y="206" width="30" height="20" rx="3" fill="none" stroke="#181717" stroke-width="1.5"/><line x1="97" y1="231" x2="139" y2="231" stroke="#181717" stroke-width="1.5"/>
+        <text x="149" y="220" font-size="14" font-weight="500" fill="#181717">laptop</text>
+        <text x="149" y="238" font-size="11" class="mono" fill="#706e6d" id="laptopNet">CAFÉ WI-FI</text>
+      </g>
+      <!-- phone -->
+      <g class="dev" data-dev="phone" tabindex="0" role="button" aria-label="Phone">
+        <rect class="box" x="280" y="70" width="160" height="70" rx="12" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+        <rect x="300" y="84" width="16" height="28" rx="3" fill="none" stroke="#181717" stroke-width="1.5"/>
+        <text x="330" y="100" font-size="14" font-weight="500" fill="#181717">phone</text>
+        <text x="330" y="118" font-size="11" class="mono" fill="#706e6d">MOBILE DATA</text>
+      </g>
+      <!-- nas -->
+      <g class="dev" data-dev="nas" tabindex="0" role="button" aria-label="Home server">
+        <rect class="box" x="475" y="190" width="160" height="70" rx="12" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+        <rect x="493" y="204" width="24" height="30" rx="3" fill="none" stroke="#181717" stroke-width="1.5"/><line x1="498" y1="214" x2="512" y2="214" stroke="#181717" stroke-width="1.5"/><line x1="498" y1="222" x2="512" y2="222" stroke="#181717" stroke-width="1.5"/>
+        <text x="527" y="220" font-size="14" font-weight="500" fill="#181717">home-nas</text>
+        <text x="527" y="238" font-size="11" class="mono" fill="#706e6d">HOME WI-FI</text>
+      </g>
+      <text x="360" y="318" text-anchor="middle" font-size="13" fill="#706e6d">Three networks, one tailnet</text>
+    </svg>
+    <div class="info-card" id="devInfo" aria-live="polite"><p style="margin:0;color:var(--muted)">Select a device to see its address and name.</p></div>
+    <div style="margin-top:12px"><button class="btn btn-ghost" id="moveLaptop" type="button">Move the laptop to mobile data</button></div>
+    <div class="figcap"><span class="label">Fig 1</span><span>Each device keeps the same Tailscale address and name, whichever network it's on.</span></div>
+  </div>
+
+  <h3>Two ways to find a device</h3>
+  <div class="grid-2">
+    <div class="card"><div class="label">Tailscale IP</div><p style="margin:8px 0 0">Every device gets an address starting with <code>100.</code>, from a range set aside so it won't clash with your home or office network. It stays the same when the device changes networks.</p></div>
+    <div class="card"><div class="label">MagicDNS name</div><p style="margin:8px 0 0">Every device also gets a name, like <code>home-nas</code>. You can use it instead of the IP. MagicDNS is on by default for new tailnets.</p></div>
+  </div>
+  <div class="nav-row"><button class="btn btn-ghost" data-prev>← Back</button><button class="btn btn-primary" data-next>Continue →</button></div>
+</section>
+
+<!-- ================= 2. HOW DEVICES FIND EACH OTHER ================= -->
+<section class="lesson" data-title="How devices find each other" id="l2">
+  <div class="label">Lesson 2</div>
+  <h2>How devices find each other</h2>
+  <p class="lede">A central coordination server introduces your devices. After that, they talk to each other directly.</p>
+  <p>Tailscale splits the work in two. The <strong>control plane</strong> is the coordination server: it handles sign-in, shares keys and sends out your access rules. The <strong>data plane</strong> is your devices: they carry your actual traffic, encrypted with WireGuard.</p>
+
+  <div class="figure">
+    <div class="label" style="margin-bottom:10px">Step through it</div>
+    <svg class="dg" viewBox="0 0 720 300" role="img" aria-labelledby="f2t" id="fig2">
+      <title id="f2t">Diagram: the coordination server shares public keys; devices connect directly</title>
+      <g id="f2-server">
+        <rect x="270" y="20" width="180" height="64" rx="12" fill="#181717"/>
+        <text x="360" y="48" text-anchor="middle" font-size="14" font-weight="500" fill="#fff">Coordination server</text>
+        <text x="360" y="68" text-anchor="middle" font-size="10" class="mono" fill="#cfc9c6">CONTROL PLANE</text>
+      </g>
+      <g id="f2-up" fill="none" stroke="#181717" stroke-width="1.5" stroke-dasharray="5 5">
+        <path d="M135 190 L270 60"/><path d="M585 190 L450 60"/>
+      </g>
+      <g id="f2-uplabel"><text x="186" y="116" text-anchor="end" font-size="11" class="mono" fill="#706e6d">PUBLIC KEY +</text><text x="186" y="130" text-anchor="end" font-size="11" class="mono" fill="#706e6d">WHERE TO FIND ME</text></g>
+      <g id="f2-down"><text x="534" y="116" font-size="11" class="mono" fill="#706e6d">PEER LIST +</text><text x="534" y="130" font-size="11" class="mono" fill="#706e6d">ACCESS RULES</text></g>
+      <g id="f2-direct"><line x1="230" y1="222" x2="490" y2="222" stroke="#3b82f6" stroke-width="3" class="flow"/>
+        <text x="360" y="210" text-anchor="middle" font-size="11" class="mono" fill="#2563eb">WIREGUARD · DIRECT</text>
+        <text x="360" y="244" text-anchor="middle" font-size="11" class="mono" fill="#2563eb">DATA PLANE</text></g>
+      <g id="f2-a"><rect x="40" y="190" width="190" height="64" rx="12" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+        <text x="135" y="216" text-anchor="middle" font-size="14" font-weight="500">laptop</text>
+        <g id="f2-keyA"><circle cx="66" cy="236" r="5" fill="#3b82f6"/><text x="78" y="240" font-size="10" class="mono" fill="#706e6d">PRIVATE KEY STAYS</text></g></g>
+      <g id="f2-b"><rect x="490" y="190" width="190" height="64" rx="12" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+        <text x="585" y="216" text-anchor="middle" font-size="14" font-weight="500">home-nas</text>
+        <g id="f2-keyB"><circle cx="516" cy="236" r="5" fill="#3b82f6"/><text x="528" y="240" font-size="10" class="mono" fill="#706e6d">PRIVATE KEY STAYS</text></g></g>
+      <text x="360" y="290" text-anchor="middle" font-size="12" fill="#706e6d" id="f2-note">Your traffic never passes through the coordination server.</text>
+    </svg>
+    <div class="stepper" role="group" aria-label="Diagram steps">
+      <button class="step-dot" data-step="0" aria-current="step">1</button>
+      <button class="step-dot" data-step="1">2</button>
+      <button class="step-dot" data-step="2">3</button>
+      <button class="step-dot" data-step="3">4</button>
+    </div>
+    <div class="step-text" id="stepText" aria-live="polite"></div>
+    <div class="figcap"><span class="label">Fig 2</span><span>The control plane shares keys and rules. The data plane carries your traffic.</span></div>
+  </div>
+
+  <div class="callout"><span class="label">Good to know</span><p>If the coordination server goes offline, devices that are already connected keep working, using the rules they last received.</p></div>
+  <div class="nav-row"><button class="btn btn-ghost" data-prev>← Back</button><button class="btn btn-primary" data-next>Continue →</button></div>
+</section>
+
+<!-- ================= 3. DIRECT VS RELAYED ================= -->
+<section class="lesson" data-title="Direct or relayed?" id="l3">
+  <div class="label">Lesson 3</div>
+  <h2>Direct or relayed?</h2>
+  <p class="lede">Tailscale always tries for a direct connection. When a network won't allow one, it relays your traffic instead, still encrypted.</p>
+  <p>Every connection starts out relayed through a <strong>DERP server</strong> (Designated Encrypted Relay for Packets), so devices can reach each other straight away. Tailscale then tries to upgrade to a direct connection. If a firewall blocks that, it tries a peer relay in your tailnet, if you've set one up. Otherwise it stays on DERP.</p>
+
+  <div class="figure">
+    <div class="label" style="margin-bottom:10px">Try it · Pick a network situation</div>
+    <div class="chips" role="group" aria-label="Network situation">
+      <button class="chip" data-scn="direct" aria-pressed="true">Both on home Wi-Fi</button>
+      <button class="chip" data-scn="peer" aria-pressed="false">Office with a peer relay</button>
+      <button class="chip" data-scn="derp" aria-pressed="false">Strict firewall, UDP blocked</button>
+    </div>
+    <svg class="dg" viewBox="0 0 720 240" role="img" aria-labelledby="f3t">
+      <title id="f3t">Diagram: three possible paths between two devices</title>
+      <rect x="40" y="88" width="150" height="64" rx="12" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+      <text x="115" y="125" text-anchor="middle" font-size="14" font-weight="500">laptop</text>
+      <rect x="530" y="88" width="150" height="64" rx="12" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+      <text x="605" y="125" text-anchor="middle" font-size="14" font-weight="500">home-nas</text>
+      <!-- DERP -->
+      <g id="p-derp">
+        <circle cx="360" cy="40" r="26" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+        <text x="360" y="44" text-anchor="middle" font-size="11" class="mono">DERP</text>
+        <path d="M190 105 Q260 45 334 40" fill="none" stroke="#3b82f6" stroke-width="3" class="flow"/>
+        <path d="M386 40 Q460 45 530 105" fill="none" stroke="#3b82f6" stroke-width="3" class="flow"/>
+      </g>
+      <!-- direct -->
+      <g id="p-direct"><line x1="190" y1="120" x2="530" y2="120" stroke="#3b82f6" stroke-width="3" class="flow"/></g>
+      <!-- peer -->
+      <g id="p-peer">
+        <rect x="316" y="178" width="88" height="40" rx="10" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+        <text x="360" y="202" text-anchor="middle" font-size="10" class="mono">PEER RELAY</text>
+        <path d="M190 138 Q250 196 316 198" fill="none" stroke="#3b82f6" stroke-width="3" class="flow"/>
+        <path d="M404 198 Q470 196 530 138" fill="none" stroke="#3b82f6" stroke-width="3" class="flow"/>
+      </g>
+    </svg>
+    <div id="scnText" aria-live="polite" style="margin-top:8px"></div>
+    <pre class="term" id="scnTerm"></pre>
+    <div class="figcap"><span class="label">Fig 3</span><span>All three paths are end-to-end encrypted. A relay can't read your traffic, because the private keys never leave your devices.</span></div>
+  </div>
+
+  <h3>Check which one you have</h3>
+  <p>Run <code>tailscale status</code> and look at the line for the other device. <code>direct</code> means direct. <code>relay</code> means DERP, with a short code for the relay's city, like <code>"tor"</code> for Toronto. <code>tailscale ping</code> shows the same thing, one reply at a time.</p>
+  <div class="nav-row"><button class="btn btn-ghost" data-prev>← Back</button><button class="btn btn-primary" data-next>Continue →</button></div>
+</section>
+
+<!-- ================= 4. HANDS-ON ================= -->
+<section class="lesson" data-title="Hands-on: connect two devices" id="l4">
+  <div class="label">Lesson 4 · Hands-on</div>
+  <h2>Connect two devices</h2>
+  <p class="lede">Set up your tailnet and reach one device from the other. Tick each step as you go.</p>
+
+  <div class="task"><input type="checkbox" id="t1" aria-label="Step 1 done"><div style="flex:1;min-width:0">
+    <div class="task-head"><h4>1. Install Tailscale on your first device</h4>
+    <p>Download it from <a href="https://tailscale.com/download" target="_blank" rel="noopener">tailscale.com/download</a>.</p></div>
+    <div class="tabs" role="tablist" aria-label="Operating system">
+      <button class="tab" role="tab" aria-selected="true" data-os="mac">macOS</button>
+      <button class="tab" role="tab" aria-selected="false" data-os="win">Windows</button>
+      <button class="tab" role="tab" aria-selected="false" data-os="linux">Linux</button>
+    </div>
+    <div id="osPanel" role="tabpanel"></div>
+  </div><svg class="task-art" viewBox="0 0 132 96" role="img" aria-label="Illustration: downloading the app to a laptop"><rect x="34" y="20" width="64" height="42" rx="3" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 66 H104" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M66 28 V48" stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M58 41 L66 49 L74 41" stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M56 54 H76" stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+  <div class="task"><input type="checkbox" id="t2" aria-label="Step 2 done"><div style="flex:1;min-width:0">
+    <div class="task-head"><h4>2. Sign in</h4>
+    <p>Sign in with an identity provider you already use, such as Google, Microsoft or GitHub. Your first sign-in creates your tailnet.</p></div>
+  </div><svg class="task-art" viewBox="0 0 132 96" role="img" aria-label="Illustration: a sign-in screen with an account confirmed"><rect x="32" y="12" width="68" height="74" rx="6" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="66" cy="32" r="8" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M53 51 Q66 40 79 51" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="44" y="58" width="44" height="9" rx="4.5" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="44" y="71" width="44" height="9" rx="4.5" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="98" cy="16" r="9" fill="#3b82f6"/><path d="M93.5 16 L97 19.5 L103 13" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+  <div class="task"><input type="checkbox" id="t3" aria-label="Step 3 done"><div style="flex:1;min-width:0">
+    <div class="task-head"><h4>3. Add a second device</h4>
+    <p>Install Tailscale on another device, like your phone, and sign in with the <strong>same account</strong>. Both devices now appear in the admin console.</p></div>
+  </div><svg class="task-art" viewBox="0 0 132 96" role="img" aria-label="Illustration: adding a phone alongside a laptop"><rect x="16" y="34" width="48" height="30" rx="3" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 68 H70" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="90" y="26" width="26" height="44" rx="5" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M99 64 H107" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M70 49 H84" stroke="#3b82f6" stroke-width="2" stroke-dasharray="3 4" stroke-linecap="round"/><circle cx="110" cy="22" r="9" fill="#3b82f6"/><path d="M110 17.5 V26.5 M105.5 22 H114.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+
+  <div class="task"><input type="checkbox" id="t4" aria-label="Step 4 done"><div style="flex:1;min-width:0">
+    <div class="task-head"><h4>4. Check that both devices are there</h4>
+    <p>On a computer, open a terminal and run:</p></div>
+    <pre class="term"><button class="copy" data-copy="tailscale status">Copy</button><span class="p">$ </span>tailscale status
+<span class="ok">100.101.102.103</span>  laptop  you@  macOS  -
+<span class="ok">100.88.12.40</span>     phone   you@  iOS    active; direct 203.0.113.7:41641</pre>
+    <p style="font-size:14px;color:var(--muted)">Your addresses and names will be different. Each line is one device, with its Tailscale IP first.</p>
+  </div><svg class="task-art" viewBox="0 0 132 96" role="img" aria-label="Illustration: a terminal listing two online devices"><rect x="16" y="14" width="100" height="68" rx="6" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 27 H116" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="25" cy="20.5" r="1.8" fill="#181717"/><circle cx="31.5" cy="20.5" r="1.8" fill="#181717"/><circle cx="38" cy="20.5" r="1.8" fill="#181717"/><circle cx="30" cy="44" r="3.5" fill="#15803d"/><path d="M40 44 H96" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="62" r="3.5" fill="#15803d"/><path d="M40 62 H84" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+  <div class="task"><input type="checkbox" id="t5" aria-label="Step 5 done"><div style="flex:1;min-width:0">
+    <div class="task-head"><h4>5. Reach the other device by name</h4>
+    <p>Ping your second device by its MagicDNS name:</p></div>
+    <pre class="term"><button class="copy" data-copy="tailscale ping phone">Copy</button><span class="p">$ </span>tailscale ping phone
+pong from phone (100.88.12.40) via <span class="hl">DERP(tor)</span> in 41ms
+pong from phone (100.88.12.40) via <span class="ok">203.0.113.7:41641</span> in 9ms</pre>
+    <p style="font-size:14px;color:var(--muted)">Notice the first reply came through a relay and the second came direct. That's the upgrade from Lesson 3, happening live.</p>
+  </div><svg class="task-art" viewBox="0 0 132 96" role="img" aria-label="Illustration: a laptop pinging a phone by name and getting a reply"><rect x="12" y="40" width="44" height="28" rx="3" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 72 H62" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="96" y="34" width="22" height="38" rx="5" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M103 66 H111" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M60 44 Q76 26 92 42" stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M85 41 L92 42 L90 35" stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M92 62 Q76 78 60 64" stroke="#181717" stroke-width="1.5" fill="none" stroke-dasharray="3 4" stroke-linecap="round"/><path d="M66 70 L60 64 L67 61" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="66" y="20" text-anchor="middle" font-size="9" font-family="SF Mono,ui-monospace,Menlo,monospace" fill="#2563eb">ping phone</text><text x="76" y="90" text-anchor="middle" font-size="9" font-family="SF Mono,ui-monospace,Menlo,monospace" fill="#706e6d">pong</text></svg></div>
+
+  <div class="callout" id="handsDone" hidden><span class="label">Nice work</span><p>You've built a tailnet. Right now, every device in it can reach every other device. The next lesson shows you how to change that.</p></div>
+  <div class="nav-row"><button class="btn btn-ghost" data-prev>← Back</button><button class="btn btn-primary" data-next>Continue →</button></div>
+</section>
+
+<!-- ================= 5. ACCESS ================= -->
+<section class="lesson" data-title="Decide who can reach what" id="l5">
+  <div class="label">Lesson 5</div>
+  <h2>Decide who can reach what</h2>
+  <p class="lede">A new tailnet lets every device reach every other device. Access rules let you narrow that down.</p>
+  <p>You write rules in the <strong>tailnet policy file</strong>, in the admin console. The recommended kind of rule is a <strong>grant</strong>. Each grant says who can connect (<code>src</code>), to what (<code>dst</code>), and on which ports (<code>ip</code>). Once you write your own rules, anything you don't grant is blocked.</p>
+
+  <div class="figure">
+    <svg class="dg" viewBox="0 48 720 128" role="img" aria-labelledby="f4t">
+      <title id="f4t">Diagram: a grant lets group:eng reach tag:server on port 443 only</title>
+      <rect x="30" y="60" width="190" height="80" rx="12" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+      <text x="125" y="92" text-anchor="middle" font-size="11" class="mono" fill="#706e6d">SRC</text>
+      <text x="125" y="116" text-anchor="middle" font-size="16" class="mono" font-weight="500">group:eng</text>
+      <rect x="500" y="60" width="190" height="80" rx="12" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+      <text x="595" y="92" text-anchor="middle" font-size="11" class="mono" fill="#706e6d">DST</text>
+      <text x="595" y="116" text-anchor="middle" font-size="16" class="mono" font-weight="500">tag:server</text>
+      <line x1="220" y1="86" x2="492" y2="86" stroke="#3b82f6" stroke-width="3"/>
+      <path d="M484 79 L496 86 L484 93" fill="none" stroke="#3b82f6" stroke-width="3"/>
+      <rect x="306" y="68" width="108" height="36" rx="18" fill="#3b82f6"/>
+      <text x="360" y="91" text-anchor="middle" font-size="13" class="mono" fill="#fff" font-weight="500">tcp:443</text>
+      <line x1="220" y1="122" x2="490" y2="122" stroke="#181717" stroke-width="1.5" stroke-dasharray="4 5" opacity=".5"/>
+      <g transform="translate(360 122)"><circle r="13" fill="#fff" stroke="#181717" stroke-width="1.5"/><path d="M-5 -5 L5 5 M5 -5 L-5 5" stroke="#181717" stroke-width="2"/></g>
+      <text x="360" y="160" text-anchor="middle" font-size="12" fill="#706e6d">Everything else, like SSH on port 22, is blocked</text>
+    </svg>
+    <div class="figcap"><span class="label">Fig 4</span><span>One grant opens one path. Anything not granted stays closed.</span></div>
+  </div>
+
+  <p>Here's that grant in the policy file, with the group and tag it uses:</p>
+<pre class="code"><span class="c">// Who's in the group</span>
+"groups": {
+  "group:eng": ["ana@example.com", "sam@example.com"]
+},
+<span class="c">// Who's allowed to apply the tag to a device</span>
+"tagOwners": {
+  "tag:server": ["autogroup:admin"]
+},
+<span class="c">// The rule itself</span>
+"grants": [
+  {
+    <span class="k">"src"</span>: ["group:eng"],
+    <span class="k">"dst"</span>: ["tag:server"],
+    <span class="k">"ip"</span>:  ["tcp:443"]
+  }
+]</pre>
+  <div class="callout"><span class="label">Tip</span><p>Use groups for people and tags for servers. When someone joins the team, you add them to the group instead of editing every rule.</p></div>
+
+  <h3>Practice: would this connect?</h3>
+  <p>Using only the grant above, decide whether each connection is allowed.</p>
+  <div id="scenarios"></div>
+  <div class="nav-row"><button class="btn btn-ghost" data-prev>← Back</button><button class="btn btn-primary" data-next>Continue →</button></div>
+</section>
+
+<!-- ================= 6. KNOWLEDGE CHECK ================= -->
+<section class="lesson" data-title="Knowledge check" id="l6">
+  <div class="label">Knowledge check</div>
+  <h2>Check what you've learned</h2>
+  <p class="lede">Five questions. You'll see the answer after each one.</p>
+  <div id="quiz"></div>
+  <div id="score" class="card score" hidden></div>
+  <div class="nav-row"><button class="btn btn-ghost" data-prev>← Back</button><button class="btn btn-primary" data-next>Continue →</button></div>
+</section>
+
+<!-- ================= 7. SUMMARY ================= -->
+<section class="lesson" data-title="Summary" id="l7">
+  <div class="label">Wrap-up</div>
+  <h2>You've built your first tailnet</h2>
+  <p class="lede">Here's what to take with you.</p>
+  <ol class="objectives">
+    <li><span class="n">01</span><span>A tailnet is your private network. Each device gets a <code>100.x</code> address and a MagicDNS name that stay with it.</span></li>
+    <li><span class="n">02</span><span>The coordination server shares keys and rules. Your traffic goes between your devices, encrypted with WireGuard.</span></li>
+    <li><span class="n">03</span><span>Connections start relayed and upgrade to direct when they can. Check with <code>tailscale status</code> or <code>tailscale ping</code>.</span></li>
+    <li><span class="n">04</span><span>New tailnets allow everything. Grants let you narrow access, and anything you don't grant is blocked.</span></li>
+  </ol>
+  <h3>Where to go next</h3>
+  <ul class="plain">
+    <li><a href="https://tailscale.com/docs/features/magicdns" target="_blank" rel="noopener">MagicDNS</a>: name devices the way you want</li>
+    <li><a href="https://tailscale.com/docs/reference/connection-types" target="_blank" rel="noopener">Connection types</a>: troubleshoot relayed connections</li>
+    <li><a href="https://tailscale.com/docs/reference/examples/grants" target="_blank" rel="noopener">Grant examples</a>: common access patterns to copy</li>
+  </ul>
+  <div class="nav-row"><button class="btn btn-ghost" data-prev>← Back</button><button class="btn btn-secondary" id="restart">Start over</button></div>
+</section>
+
+<!-- ================= STYLE GUIDE ================= -->
+<section class="lesson" data-guide="true" id="guide">
+  <div class="label">Design notes</div>
+  <h2>Style guide for this module</h2>
+  <p class="lede">The design system behind this course: how it looks, how diagrams are drawn, and how it's written.</p>
+  <p class="disclaimer">Visual direction matches Tailscale's docs site (tailscale.com/docs), so the course would sit naturally beside it. No Tailscale logos or marks are used.</p>
+
+  <h3>Colour</h3>
+  <p>A white page, near-black text and hairline borders instead of shadows, as on the docs site. Blue is the only accent: it marks links and the paths traffic takes in diagrams.</p>
+  <div class="swatches">
+    <div class="sw"><div class="chipc" style="background:#ffffff"></div><div class="t"><strong>Page</strong><span>#FFFFFF</span></div></div>
+    <div class="sw"><div class="chipc" style="background:#faf9f8"></div><div class="t"><strong>Surface</strong><span>#FAF9F8 · code, panels</span></div></div>
+    <div class="sw"><div class="chipc" style="background:#eeebea"></div><div class="t"><strong>Hairline</strong><span>#EEEBEA · borders</span></div></div>
+    <div class="sw"><div class="chipc" style="background:#181717"></div><div class="t"><strong>Ink</strong><span>#181717 · 17.9:1</span></div></div>
+    <div class="sw"><div class="chipc" style="background:#2e2d2d"></div><div class="t"><strong>Body text</strong><span>#2E2D2D · 13.7:1</span></div></div>
+    <div class="sw"><div class="chipc" style="background:#706e6d"></div><div class="t"><strong>Muted text</strong><span>#706E6D · 5.1:1</span></div></div>
+    <div class="sw"><div class="chipc" style="background:#3b82f6"></div><div class="t"><strong>Docs blue</strong><span>#3B82F6 · graphics only</span></div></div>
+    <div class="sw"><div class="chipc" style="background:#2563eb"></div><div class="t"><strong>Link blue</strong><span>#2563EB · 5.2:1</span></div></div>
+  </div>
+  <div class="callout"><span class="label">Accessibility decision</span><p>The docs site uses #3B82F6 for links. On white that's 3.7:1, under the 4.5:1 that WCAG AA requires for body text. This module keeps that blue for diagrams, where 3:1 is enough, and uses #2563EB for links.</p></div>
+
+  <h3>Type</h3>
+  <table class="spec">
+    <thead><tr><th>Role</th><th>Spec</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td><span style="font-size:26px;font-weight:500;letter-spacing:-.02em;color:var(--ink)">Lesson title</span></td><td>Inter 500 · 36px · −2% tracking</td><td>One per lesson. Same weight as docs page titles.</td></tr>
+      <tr><td><span style="font-size:18px;color:var(--muted)">Lede</span></td><td>Inter 400 · 18px · muted</td><td>One sentence: the lesson's main idea.</td></tr>
+      <tr><td>Body</td><td>Inter 400 · 16px · 1.55 · #2E2D2D</td><td>Reading text. Lines under 75 characters.</td></tr>
+      <tr><td><span class="label">Label</span></td><td>Inter 600 · 11px · caps</td><td>Eyebrows and figure numbers. Stands in for MDIO, Tailscale's own label face, which isn't publicly available.</td></tr>
+      <tr><td><code>tailscale status</code></td><td>SF Mono · 14px · light grey with hairline</td><td>Commands, values, policy keys. Same treatment as the docs.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Components</h3>
+  <table class="spec">
+    <thead><tr><th>Component</th><th>Spec</th></tr></thead>
+    <tbody>
+      <tr><td>Note</td><td>1px hairline box, 4px radius, ⓘ icon on the left. Matches the docs' note style.</td></tr>
+      <tr><td>Primary button</td><td>Black fill, white text, 6px radius, like the docs header's main button. One per screen.</td></tr>
+      <tr><td>Terminal</td><td>Light grey block with a hairline border. Relayed replies in amber, direct replies in green, always with the words "DERP" or "direct" so colour isn't the only signal.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Diagram conventions</h3>
+  <table class="spec">
+    <thead><tr><th>Element</th><th>Drawn as</th></tr></thead>
+    <tbody>
+      <tr><td>Device</td><td>White rounded rectangle, 1.5px ink outline, simple line icon, name in Inter 500</td></tr>
+      <tr><td>Control plane</td><td>Solid ink block. Messages to it are dashed ink lines.</td></tr>
+      <tr><td>Your traffic</td><td>Solid docs-blue line, 3px, animated dashes for direction. Motion stops if the user prefers reduced motion.</td></tr>
+      <tr><td>Relay</td><td>Small white circle or pill with a caps label</td></tr>
+      <tr><td>Tailnet boundary</td><td>Dashed blue outline on a light dot grid</td></tr>
+      <tr><td>Blocked path</td><td>Faded dashed ink line with an × marker. Never colour alone.</td></tr>
+    </tbody>
+  </table>
+  <p>Every diagram has a figure number and a one-line caption that states the takeaway, not just what's shown.</p>
+
+  <h3>Voice</h3>
+  <div class="do-dont">
+    <div class="do"><span class="label">Do</span>"Every connection starts out relayed, then tries to go direct."</div>
+    <div class="dont"><span class="label">Don't</span>"Tailscale leverages a sophisticated NAT traversal methodology to optimize connectivity."</div>
+    <div class="do"><span class="label">Do</span>One idea per sentence. Define a term the first time, then use it the same way every time.</div>
+    <div class="dont"><span class="label">Don't</span>Stack acronyms, or switch between "tailnet," "network" and "mesh" for the same thing.</div>
+  </div>
+
+  <h3>Course structure</h3>
+  <p>Each lesson follows the same pattern: a title, a one-sentence lede, a short explanation, one interactive diagram or exercise, and a single "Continue" action. Concepts come before the hands-on lesson, so the commands make sense when learners run them.</p>
+  <div class="nav-row"><span></span><button class="btn btn-primary" id="backToCourse">← Back to the course</button></div>
+</section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  const lessons=[...document.querySelectorAll('.lesson:not([data-guide])')];
+  const guide=document.getElementById('guide');
+  const list=document.getElementById('lessonList');
+  const visited=new Set([0]);
+  let cur=0;
+
+  lessons.forEach((s,i)=>{
+    const li=document.createElement('li');
+    const b=document.createElement('button');
+    b.type='button';
+    b.innerHTML='<span class="lesson-mark">'+(i===0?'·':i)+'</span><span>'+s.dataset.title+'</span>';
+    b.addEventListener('click',()=>go(i));
+    li.appendChild(b);list.appendChild(li);
+  });
+  const navBtns=[...list.querySelectorAll('button')];
+
+  function go(i){
+    cur=i;visited.add(i);
+    lessons.forEach((s,j)=>s.classList.toggle('active',j===i));
+    guide.classList.remove('active');
+    document.getElementById('guideBtn').removeAttribute('aria-current');
+    navBtns.forEach((b,j)=>{
+      b.toggleAttribute('aria-current',j===i); if(j===i)b.setAttribute('aria-current','page');
+      b.parentElement.classList.toggle('done',visited.has(j)&&j!==i);
+    });
+    const pct=Math.round((visited.size-1)/(lessons.length-1)*100);
+    document.getElementById('bar').style.width=pct+'%';
+    document.querySelector('.progress').setAttribute('aria-valuenow',pct);
+    document.getElementById('progressText').textContent=pct+'% complete';
+    closeMenu();window.scrollTo(0,0);
+    const h=lessons[i].querySelector('h2');h.setAttribute('tabindex','-1');h.focus({preventScroll:true});
+  }
+  document.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>go(Math.min(cur+1,lessons.length-1))));
+  document.querySelectorAll('[data-prev]').forEach(b=>b.addEventListener('click',()=>go(Math.max(cur-1,0))));
+  document.getElementById('restart').addEventListener('click',()=>{visited.clear();visited.add(0);go(0)});
+  document.getElementById('guideBtn').addEventListener('click',()=>{
+    lessons.forEach(s=>s.classList.remove('active'));navBtns.forEach(b=>b.removeAttribute('aria-current'));
+    guide.classList.add('active');document.getElementById('guideBtn').setAttribute('aria-current','page');closeMenu();window.scrollTo(0,0);
+  });
+  document.getElementById('backToCourse').addEventListener('click',()=>go(cur));
+
+  // mobile menu
+  const sb=document.getElementById('sidebar'),mb=document.getElementById('menuBtn');
+  mb.addEventListener('click',()=>{const o=sb.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
+  function closeMenu(){sb.classList.remove('open');mb.setAttribute('aria-expanded','false')}
+
+  // ---- Lesson 1: devices ----
+  const devs={
+    laptop:{name:'laptop',ip:'100.101.102.103',dns:'laptop.tail1a2b3c.ts.net',net:'Café Wi-Fi'},
+    phone:{name:'phone',ip:'100.88.12.40',dns:'phone.tail1a2b3c.ts.net',net:'Mobile data'},
+    nas:{name:'home-nas',ip:'100.64.7.21',dns:'home-nas.tail1a2b3c.ts.net',net:'Home Wi-Fi'}
+  };
+  const info=document.getElementById('devInfo');let selDev=null;
+  function showDev(k){
+    selDev=k;const d=devs[k];
+    document.querySelectorAll('.dev').forEach(g=>g.classList.toggle('sel',g.dataset.dev===k));
+    info.innerHTML='<dl class="kv"><dt>Device</dt><dd>'+d.name+'</dd><dt>Tailscale IP</dt><dd>'+d.ip+'</dd><dt>MagicDNS name</dt><dd>'+d.name+'</dd><dt>Full name</dt><dd>'+d.dns+'</dd><dt>Physical network</dt><dd>'+d.net+'</dd></dl>';
+  }
+  document.querySelectorAll('.dev').forEach(g=>{
+    g.addEventListener('click',()=>showDev(g.dataset.dev));
+    g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showDev(g.dataset.dev)}});
+  });
+  const mv=document.getElementById('moveLaptop');
+  mv.addEventListener('click',()=>{
+    const onCafe=devs.laptop.net==='Café Wi-Fi';
+    devs.laptop.net=onCafe?'Mobile data':'Café Wi-Fi';
+    document.getElementById('laptopNet').textContent=onCafe?'MOBILE DATA':'CAFÉ WI-FI';
+    mv.textContent=onCafe?'Move the laptop back to café Wi-Fi':'Move the laptop to mobile data';
+    showDev('laptop');
+    info.insertAdjacentHTML('beforeend','<p style="margin:10px 0 0;font-size:14px"><strong>The network changed. The Tailscale IP and name didn\'t.</strong></p>');
+  });
+
+  // ---- Lesson 2: stepper ----
+  const steps=[
+    {h:'Each device makes its own keys',p:'When you install Tailscale, the device generates a key pair. The private key never leaves the device.',lit:['f2-a','f2-b','f2-keyA','f2-keyB']},
+    {h:'Devices check in with the coordination server',p:'Each device signs in and shares its public key, plus where it can currently be reached.',lit:['f2-a','f2-b','f2-server','f2-up','f2-uplabel']},
+    {h:'The server shares the peer list and your rules',p:'Each device gets the public keys of the devices it\'s allowed to talk to, and the access rules that apply.',lit:['f2-a','f2-b','f2-server','f2-up','f2-down']},
+    {h:'Devices connect to each other',p:'Using those keys, the two devices open an encrypted WireGuard tunnel between themselves. The server isn\'t in the path.',lit:['f2-a','f2-b','f2-direct']}
+  ];
+  const ids=['f2-server','f2-up','f2-uplabel','f2-down','f2-direct','f2-a','f2-b','f2-keyA','f2-keyB'];
+  function step(n){
+    ids.forEach(id=>{const el=document.getElementById(id);const on=steps[n].lit.includes(id);el.classList.toggle('dim',!on);el.classList.toggle('lit',on)});
+    document.querySelectorAll('.step-dot').forEach(d=>d.toggleAttribute('aria-current',+d.dataset.step===n)||null);
+    document.querySelectorAll('.step-dot').forEach(d=>{if(+d.dataset.step===n)d.setAttribute('aria-current','step')});
+    document.getElementById('stepText').innerHTML='<h4>Step '+(n+1)+' · '+steps[n].h+'</h4><p style="margin:0">'+steps[n].p+'</p>';
+  }
+  document.querySelectorAll('.step-dot').forEach(d=>d.addEventListener('click',()=>step(+d.dataset.step)));
+  step(0);
+
+  // ---- Lesson 3: scenarios ----
+  const scn={
+    direct:{show:'p-direct',t:'<strong>Direct.</strong> Both networks allow it, so the devices send traffic straight to each other over UDP. This is the fastest path.',term:'<span class="p">$ </span>tailscale ping home-nas\npong from home-nas (100.64.7.21) via <span class="hl">DERP(tor)</span> in 38ms\npong from home-nas (100.64.7.21) via <span class="ok">198.51.100.20:41641</span> in 6ms'},
+    peer:{show:'p-peer',t:'<strong>Peer relay.</strong> A direct path isn\'t possible, but your tailnet has a device set up as a peer relay. Traffic goes through it instead of a public DERP server.',term:'<span class="p">$ </span>tailscale ping home-nas\npong from home-nas (100.64.7.21) via <span class="hl">DERP(tor)</span> in 44ms\npong from home-nas (100.64.7.21) via <span class="ok">peer-relay(192.168.64.2:7777:vni:1)</span> in 4ms'},
+    derp:{show:'p-derp',t:'<strong>Relayed through DERP.</strong> The firewall blocks the UDP traffic a direct connection needs, so traffic stays on the DERP relay. It still works, just with more delay.',term:'<span class="p">$ </span>tailscale ping home-nas\npong from home-nas (100.64.7.21) via <span class="hl">DERP(tor)</span> in 73ms\npong from home-nas (100.64.7.21) via <span class="hl">DERP(tor)</span> in 69ms\ndirect connection not established'}
+  };
+  function setScn(k){
+    ['p-direct','p-peer','p-derp'].forEach(id=>{const on=id===scn[k].show;const el=document.getElementById(id);el.classList.toggle('dim',!on);el.classList.toggle('lit',on)});
+    document.querySelectorAll('[data-scn]').forEach(c=>c.setAttribute('aria-pressed',c.dataset.scn===k));
+    document.getElementById('scnText').innerHTML='<p style="margin:0">'+scn[k].t+'</p>';
+    document.getElementById('scnTerm').innerHTML=scn[k].term;
+  }
+  document.querySelectorAll('[data-scn]').forEach(c=>c.addEventListener('click',()=>setScn(c.dataset.scn)));
+  setScn('direct');
+
+  // ---- Lesson 4: OS tabs, tasks, copy ----
+  const os={
+    mac:'<p style="margin:12px 0 0">Install the app from the Mac App Store or the download page, then open it from the menu bar.</p>',
+    win:'<p style="margin:12px 0 0">Run the installer from the download page, then open Tailscale from the system tray.</p>',
+    linux:'<pre class="term"><button class="copy" data-copy="curl -fsSL https://tailscale.com/install.sh | sh">Copy</button><span class="p">$ </span>curl -fsSL https://tailscale.com/install.sh | sh\n<span class="p">$ </span>sudo tailscale up</pre><p style="font-size:14px;color:var(--muted);margin:0"><code>tailscale up</code> prints a sign-in link. Open it in a browser to finish.</p>'
+  };
+  function setOS(k){document.querySelectorAll('[data-os]').forEach(t=>t.setAttribute('aria-selected',t.dataset.os===k));document.getElementById('osPanel').innerHTML=os[k]}
+  document.querySelectorAll('[data-os]').forEach(t=>t.addEventListener('click',()=>setOS(t.dataset.os)));
+  setOS('mac');
+  const tasks=[...document.querySelectorAll('.task input')];
+  tasks.forEach(cb=>cb.addEventListener('change',()=>{cb.closest('.task').classList.toggle('checked',cb.checked);document.getElementById('handsDone').hidden=!tasks.every(t=>t.checked)}));
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('.copy');if(!b)return;
+    const txt=b.dataset.copy;
+    const done=()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1400)};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,()=>{b.textContent='Select & copy'})}else{b.textContent='Select & copy'}
+  });
+
+  // ---- Lesson 5: would it connect ----
+  const sc=[
+    {q:'Ana (in <code>group:eng</code>) opens <code>https://</code> on a device tagged <code>tag:server</code>.',a:true,why:'HTTPS uses TCP port 443, which the grant allows from group:eng to tag:server.'},
+    {q:'Sam (in <code>group:eng</code>) tries to SSH, on port 22, into a <code>tag:server</code> device.',a:false,why:'The grant only opens tcp:443. Port 22 isn\'t granted, so it\'s blocked.'},
+    {q:'Lee (not in <code>group:eng</code>) opens <code>https://</code> on a <code>tag:server</code> device.',a:false,why:'The right port, but the wrong source. Lee isn\'t in group:eng, and no other grant covers Lee.'}
+  ];
+  const scEl=document.getElementById('scenarios');
+  sc.forEach((s,i)=>{
+    const d=document.createElement('div');d.className='scenario';
+    d.innerHTML='<div class="scenario-q"><p>'+s.q+'</p><div class="choice-row"><button class="choice" data-v="1">Allowed</button><button class="choice" data-v="0">Blocked</button></div></div><div class="feedback" aria-live="polite"></div>';
+    d.querySelectorAll('.choice').forEach(c=>c.addEventListener('click',()=>{
+      const ok=(c.dataset.v==='1')===s.a;const f=d.querySelector('.feedback');
+      f.className='feedback show '+(ok?'right':'wrong');
+      f.innerHTML='<strong>'+(ok?'Correct. ':'Not quite. ')+(s.a?'Allowed.':'Blocked.')+'</strong> '+s.why;
+    }));
+    scEl.appendChild(d);
+  });
+
+  // ---- Lesson 6: quiz ----
+  const quiz=[
+    {q:'Your laptop moves from home Wi-Fi to mobile data. What happens to its Tailscale IP address?',o:['It changes to a new 100.x address','It stays the same','It switches to your mobile carrier\'s address'],a:1,why:'Tailscale IPs stay with the device, whatever network it\'s on.'},
+    {q:'What does the coordination server do?',o:['Carries all traffic between your devices','Shares public keys, device locations and access rules','Stores your devices\' private keys'],a:1,why:'It\'s the control plane. Traffic goes device to device, and private keys never leave the device.'},
+    {q:'tailscale ping shows "via DERP(tor)" on every reply, then "direct connection not established." What does that mean?',o:['The connection is failing','Traffic is relayed through a DERP server, still encrypted','The other device is offline'],a:1,why:'The devices are connected, but something like a firewall is stopping a direct path, so traffic stays on the relay.'},
+    {q:'Can a DERP relay read the traffic it forwards?',o:['Yes, it decrypts and re-encrypts it','Only if you allow it in the policy file','No, it only sees encrypted packets'],a:2,why:'Private keys stay on your devices, so a relay just forwards encrypted packets.'},
+    {q:'Your policy file has one grant: group:eng to tag:server on tcp:443. A member of group:eng tries tcp:5432 on a tag:server device. What happens?',o:['It\'s allowed, because they\'re in group:eng','It\'s blocked, because that port isn\'t granted','It\'s allowed, because new tailnets allow everything'],a:1,why:'Once you write your own rules, anything you don\'t grant is blocked, including other ports.'}
+  ];
+  const qEl=document.getElementById('quiz');let answered=0,right=0;
+  quiz.forEach((it,i)=>{
+    const box=document.createElement('div');box.className='q';
+    let h='<fieldset><legend>'+(i+1)+'. '+it.q+'</legend>';
+    it.o.forEach((o,j)=>{h+='<label class="opt"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+o+'</span></label>'});
+    h+='</fieldset><div class="feedback" aria-live="polite"></div>';box.innerHTML=h;
+    box.querySelectorAll('input').forEach(inp=>inp.addEventListener('change',()=>{
+      const j=+inp.value,ok=j===it.a;
+      box.querySelectorAll('.opt').forEach((l,k)=>{l.classList.toggle('correct',k===it.a);l.classList.toggle('incorrect',k===j&&!ok);l.querySelector('input').disabled=true});
+      const f=box.querySelector('.feedback');f.className='feedback show '+(ok?'right':'wrong');
+      f.innerHTML='<strong>'+(ok?'Correct.':'Not quite.')+'</strong> '+it.why;
+      answered++;if(ok)right++;
+      if(answered===quiz.length){const s=document.getElementById('score');s.hidden=false;s.innerHTML='<div class="label">Your score</div><div class="big">'+right+' / '+quiz.length+'</div><p style="margin:12px 0 0;color:var(--muted)">'+(right===quiz.length?'Perfect. You\'re ready to build on your tailnet.':right>=3?'Good work. Revisit any lesson you want to firm up.':'Worth another pass through Lessons 2 to 5.')+'</p>'}
+    }));
+    qEl.appendChild(box);
+  });
+
+  go(0);
+})();
+</script>
+</body>
+</html>

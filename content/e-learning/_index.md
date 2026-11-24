@@ -55,3 +55,14 @@ An introduction to the generative and agentic AI built into the PagerDuty platfo
 </div>
 
 👉 [Open the course full screen →](../elearning/pagerduty-ai/)
+
+---
+
+### Your First Tailnet (concept course for Tailscale)
+A self-initiated concept course, built from Tailscale's public docs to show how I'd approach their learning content. It covers what a tailnet is, how devices find each other, direct versus relayed connections, a hands-on setup, and access rules with grants. Includes a design system based on Tailscale's look and a diagram style guide. Not an official Tailscale course.
+
+<div class="course-embed">
+<iframe src="../elearning/your-first-tailnet/" title="Your First Tailnet concept e-learning course" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
+</div>
+
+👉 [Open the course full screen →](../elearning/your-first-tailnet/)
