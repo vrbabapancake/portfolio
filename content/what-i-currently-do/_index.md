@@ -44,3 +44,22 @@ I’m the Senior Technical Content Writer at PagerDuty, and a team of one for th
 </script>
 
 👉 [Open the graphic full size →](graphic/)
+
+### Moving our docs to docs as code
+
+I helped move docs.pagerduty.com off ReadMe.io and onto a GitHub-based Next.js site. The top row shows the migration. The bottom loop shows how every docs change works now, including the check that keeps our product tours and guides up to date. Click any card to learn more.
+
+<div class="graphic-embed" id="migration-embed">
+<iframe src="migration/" title="From ReadMe.io to docs as code: interactive graphic" loading="lazy" allow="fullscreen" allowfullscreen></iframe>
+</div>
+<script>
+  (function(){
+    var box = document.getElementById('migration-embed');
+    function fit(){ if (box.clientWidth) box.style.setProperty('--graphic-scale', box.clientWidth / 1600); }
+    fit();
+    if (window.ResizeObserver) new ResizeObserver(fit).observe(box);
+    else window.addEventListener('resize', fit);
+  })();
+</script>
+
+👉 [Open the migration graphic full size →](migration/)

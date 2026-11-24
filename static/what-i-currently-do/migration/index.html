@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1600">
+<title>Moving docs.pagerduty.com to docs as code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800;900&display=swap">
+<script>
+  // Match the site's light/dark theme. Embedded: follow the parent page live. Standalone: saved choice, else the OS.
+  (function(){
+    var root = document.documentElement;
+    function apply(dark){ root.classList.toggle('dark', !!dark); }
+    var parentRoot = null;
+    try { if (window.parent !== window) parentRoot = window.parent.document.documentElement; } catch (e) {}
+    if (parentRoot) {
+      var sync = function(){ apply(parentRoot.classList.contains('dark')); };
+      sync();
+      new MutationObserver(sync).observe(parentRoot, { attributes: true, attributeFilter: ['class'] });
+      return;
+    }
+    var theme = null;
+    try { theme = localStorage.getItem('theme'); } catch (e) {}
+    apply(theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches));
+  })();
+</script>
+<style>
+:root{
+  --g-bg:#f6f1ea; --g-text:#26132a; --g-muted:#55455a;
+  --g-card:#ffffff; --g-card-muted:#55455a; --g-border:#26132a;
+  --g-line:#7d6f80; --g-icon-bg:#f3cdf7; --g-accent:#36677a;
+  --g-panel:#f8e4fa; --g-panel-border:#26132a;
+  --g-shadow-on:6px 6px 0 #f3cdf7; --g-shadow-hero:8px 8px 0 #f3cdf7;
+}
+html.dark{
+  --g-bg:#15232a; --g-text:#f6f1ea; --g-muted:#c6bccb;
+  --g-card:#1d2f37; --g-card-muted:#c6bccb; --g-border:#c6bccb;
+  --g-line:#8a9aa1; --g-icon-bg:#3a2840; --g-accent:#8cc3d6;
+  --g-panel:#3a2840; --g-panel-border:#c6bccb;
+  --g-shadow-on:6px 6px 0 #6b4a72; --g-shadow-hero:8px 8px 0 #6b4a72;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--g-bg)}
+.stage{position:relative;width:1600px;height:1200px;background:var(--g-bg);color:var(--g-text);font-family:'Figtree',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+h1{position:absolute;left:64px;top:56px;margin:0;font-size:52px;line-height:1;font-weight:800;letter-spacing:-1.4px}
+.sub{position:absolute;left:64px;top:124px;margin:0;font-size:20px;font-weight:650;color:var(--g-muted)}
+.label{position:absolute;font-size:16px;font-weight:800;color:var(--g-muted)}
+.lines{position:absolute;left:0;top:0;width:1600px;height:1200px;overflow:visible;pointer-events:none;fill:none;stroke:var(--g-line);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lines text{stroke:none;fill:var(--g-muted);font:700 13px 'Figtree',system-ui,sans-serif}
+.card{position:absolute;margin:0;padding:16px;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;font-family:inherit;color:var(--g-text);background:var(--g-card);border:1px solid var(--g-border);border-radius:22px;font-size:13.5px;line-height:1.35}
+.card.col{flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:10px}
+.card:hover{border-color:var(--g-accent)}
+.card[aria-pressed="true"]{border-color:var(--g-accent);box-shadow:inset 4px 0 0 var(--g-accent),var(--g-shadow-on)}
+.card:focus-visible{outline:3px solid var(--g-accent);outline-offset:3px}
+.card .ic{width:40px;height:40px;padding:8px;flex:none;background:var(--g-icon-bg);border-radius:12px;fill:none;stroke:var(--g-accent);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.card b{display:block;font-size:16px;font-weight:900;margin-bottom:2px}
+.card .d{color:var(--g-card-muted)}
+.num{position:absolute;right:14px;top:12px;width:26px;height:26px;border-radius:999px;display:grid;place-items:center;font-size:13px;font-weight:900;color:var(--g-accent);border:1.5px solid var(--g-accent);background:var(--g-card)}
+.hub{border-width:2px;border-radius:28px;box-shadow:var(--g-shadow-hero);flex-direction:column;justify-content:center;text-align:center;align-items:center}
+.hub .ic{width:56px;height:56px;padding:12px;border-radius:999px}
+.hub b{font-size:26px;letter-spacing:-.4px}
+.hub[aria-pressed="true"]{box-shadow:var(--g-shadow-hero);border-color:var(--g-accent)}
+.panel{position:absolute;left:64px;top:1062px;width:1472px;height:112px;padding:20px 28px;display:flex;flex-direction:column;justify-content:center;gap:6px;background:var(--g-panel);border:1px solid var(--g-panel-border);border-radius:22px}
+.panel .t{font-size:20px;font-weight:900}
+.panel .b{font-size:16px;line-height:1.55;color:var(--g-muted);max-width:1200px}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <h1>From ReadMe.io to docs as code</h1>
+  <p class="sub">How we moved docs.pagerduty.com to a GitHub-based Next.js site, and how docs change now</p>
+
+  <!-- connectors: drawn underneath the cards -->
+  <svg class="lines" viewBox="0 0 1600 1200" aria-hidden="true">
+    <defs>
+      <marker id="ah" orient="auto" markerWidth="5" markerHeight="5" refX="2" refY="2" overflow="visible"><path d="M0 0 L4 2 L0 4 Z" style="fill:var(--g-line);stroke:none"/></marker>
+    </defs>
+    <path d="M284 331 H310" marker-end="url(#ah)"/>
+    <path d="M534 331 H560" marker-end="url(#ah)"/>
+    <path d="M784 331 H810" marker-end="url(#ah)"/>
+    <path d="M1034 331 H1060" marker-end="url(#ah)"/>
+    <path d="M1284 331 H1310" marker-end="url(#ah)"/>
+    <path d="M1424 406 V545 H966" marker-end="url(#ah)"/>
+    <path d="M800 620 V676 H214 V714" marker-end="url(#ah)"/>
+    <text x="420" y="668">Every change starts here</text>
+    <path d="M364 780 H418" marker-end="url(#ah)"/>
+    <path d="M724 780 H778" marker-end="url(#ah)"/>
+    <path d="M1084 780 H1138" marker-end="url(#ah)"/>
+    <path d="M934 840 V906" marker-end="url(#ah)"/>
+    <text x="946" y="880">and checks</text>
+    <path d="M784 971 H214 V846" marker-end="url(#ah)"/>
+    <text x="300" y="961">Needs an update? It becomes a new pull request</text>
+  </svg>
+
+  <div class="label" style="left:64px;top:214px">The migration</div>
+  <button class="card col" style="left:64px;top:256px;width:220px;height:150px" data-id="readme"><span class="num">1</span>
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span><b>ReadMe.io</b><span class="d">Where the customer docs started.</span></span></button>
+  <button class="card col" style="left:814px;top:256px;width:220px;height:150px" data-id="export"><span class="num">4</span>
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 12v6"/><path d="m9 15 3 3 3-3"/></svg>
+    <span><b>Export with Claude</b><span class="d">Every article out as .mdx, front matter set by the IA.</span></span></button>
+  <button class="card col" style="left:314px;top:256px;width:220px;height:150px" data-id="ia"><span class="num">2</span>
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/><path d="M12 7v5M5 17v-5h14v5"/></svg>
+    <span><b>New information architecture</b><span class="d">Designed first. It decided the front matter.</span></span></button>
+  <button class="card col" style="left:564px;top:256px;width:220px;height:150px" data-id="map"><span class="num">3</span>
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+    <span><b>Map every article</b><span class="d">Where each one goes in the new structure.</span></span></button>
+  <button class="card col" style="left:1064px;top:256px;width:220px;height:150px" data-id="build"><span class="num">5</span>
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>
+    <span><b>Developers build the site</b><span class="d">A new Next.js docs site.</span></span></button>
+  <button class="card col" style="left:1314px;top:256px;width:220px;height:150px" data-id="review"><span class="num">6</span>
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 7 17l-5-5"/><path d="m22 10-7.5 7.5L13 16"/></svg>
+    <span><b>Import &amp; review</b><span class="d">All content brought in and checked.</span></span></button>
+
+  <button class="card hub" style="left:640px;top:470px;width:320px;height:150px" data-id="github">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="8" r="2.5"/><path d="M6 8.5v7"/><path d="M18 10.5c0 4-6 3-11 6"/></svg>
+    <span><b>Content lives in GitHub</b><span class="d">Docs as code: every page is an .mdx file.</span></span></button>
+
+  <div class="label" style="left:64px;top:640px">How docs change now</div>
+  <button class="card" style="left:64px;top:720px;width:300px;height:120px" data-id="pr">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M6 8.5v7"/><path d="M18 15.5V9a3 3 0 0 0-3-3h-4"/><path d="m13 3-3 3 3 3"/></svg>
+    <span><b>Pull request</b><span class="d">Every change is proposed in GitHub.</span></span></button>
+  <button class="card" style="left:424px;top:720px;width:300px;height:120px" data-id="rev">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+    <span><b>Review</b><span class="d">Checked before it goes live.</span></span></button>
+  <button class="card" style="left:784px;top:720px;width:300px;height:120px" data-id="merge">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="12" r="2.5"/><path d="M6 8.5v7"/><path d="M6 8.5c0 3 3 3.5 9.5 3.5"/></svg>
+    <span><b>Merge</b><span class="d">Approved changes go in.</span></span></button>
+  <button class="card" style="left:1144px;top:720px;width:300px;height:120px" data-id="live">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    <span><b>Live on docs.pagerduty.com</b><span class="d">The site updates with the change.</span></span></button>
+  <button class="card" style="left:784px;top:912px;width:660px;height:118px" data-id="impact">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/></svg>
+    <span><b>Impact check: tours &amp; guides</b><span class="d">Product tours and guides live on the same site, so the workflow checks whether a doc change means they need updating too.</span></span></button>
+
+  <div class="panel" aria-live="polite"><div class="t" id="pt"></div><div class="b" id="pb"></div></div>
+</div>
+
+<script>
+(function () {
+  var DETAILS = {
+    none:   ['Click any card to learn more', 'The top row is the one-time migration. The bottom loop is how every docs change works now, including the check that keeps tours and guides in step.'],
+    readme: ['1 · ReadMe.io', 'PagerDuty’s customer documentation started out hosted on ReadMe.io.'],
+    ia:     ['2 · New information architecture', 'Before exporting anything, we designed the information architecture for the new site. It decided what each article’s front matter would say.'],
+    map:    ['3 · Map every article', 'We went through every article and decided where it belongs in the new structure.'],
+    export: ['4 · Export with Claude', 'I used Claude to export every article as an .mdx file, with front matter that records where it sits in the new information architecture. Nothing had to be copied over by hand.'],
+    build:  ['5 · Developers build the site', 'Our developers built the new Next.js documentation site.'],
+    review: ['6 · Import & review', 'We brought all of the exported content into the new site and reviewed it.'],
+    github: ['Content lives in GitHub', 'The docs are now docs as code: every page is an .mdx file in GitHub, versioned and reviewed like software.'],
+    pr:     ['Pull request', 'Every change to the docs starts as a pull request in GitHub.'],
+    rev:    ['Review', 'Each pull request is reviewed before anything goes live.'],
+    merge:  ['Merge', 'Once it’s approved, the pull request is merged.'],
+    live:   ['Live on docs.pagerduty.com', 'After the merge, the site updates with the change.'],
+    impact: ['Impact check: tours & guides', 'Our product tours and guides live on the same site. When a doc changes, the workflow identifies any tours or guides that need updating too, and that update goes through the same pull request loop.']
+  };
+  // Where energy flows out of each card (polylines in the 1600x1200 layout)
+  var FLOWS = {
+    readme: [[[284,331],[314,331]]], ia: [[[534,331],[564,331]]], map: [[[784,331],[814,331]]],
+    export: [[[1034,331],[1064,331]]], build: [[[1284,331],[1314,331]]], review: [[[1424,406],[1424,545],[960,545]]],
+    github: [[[800,620],[800,676],[214,676],[214,720]]],
+    pr: [[[364,780],[424,780]]], rev: [[[724,780],[784,780]]],
+    merge: [[[1084,780],[1144,780]], [[934,840],[934,912]]],
+    live: [], impact: [[[784,971],[214,971],[214,840]]]
+  };
+  var NEXT = { readme:'ia', ia:'map', map:'export', export:'build', build:'review', review:'github', github:'pr', pr:'rev', rev:'merge', merge:'live', impact:'pr' };
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+  var sel = 'none';
+  function show(id) {
+    sel = id;
+    cards.forEach(function (c) { c.setAttribute('aria-pressed', c.dataset.id === id ? 'true' : 'false'); });
+    var d = DETAILS[id] || DETAILS.none;
+    document.getElementById('pt').textContent = d[0];
+    document.getElementById('pb').textContent = d[1];
+  }
+  cards.forEach(function (c) {
+    c.addEventListener('click', function () { var id = c.dataset.id; show(sel === id ? 'none' : id); if (sel !== 'none') fire(id); });
+  });
+  show('none');
+
+  // ---- energy orbs, same look as the first graphic ----
+  var NS = 'http://www.w3.org/2000/svg';
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var stage = document.getElementById('stage');
+  function el(n, a, p) { var e = document.createElementNS(NS, n); for (var k in a) { if (/^(fill|stroke|stop-color)$/.test(k) && String(a[k]).indexOf('var(') === 0) e.style.setProperty(k, a[k]); else e.setAttribute(k, a[k]); } if (p) p.appendChild(e); return e; }
+  var svg = el('svg', { viewBox: '0 0 1600 1200', width: 1600, height: 1200, 'aria-hidden': 'true' });
+  svg.style.cssText = 'position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:5';
+  var defs = el('defs', {}, svg), f = el('filter', { id: 'glow', x: '-200%', y: '-200%', width: '500%', height: '500%' }, defs);
+  el('feGaussianBlur', { stdDeviation: 6 }, f);
+  var g0 = el('radialGradient', { id: 'core' }, defs);
+  el('stop', { offset: '0%', 'stop-color': '#ffffff' }, g0); el('stop', { offset: '45%', 'stop-color': '#f3cdf7' }, g0); el('stop', { offset: '100%', 'stop-color': 'var(--g-accent)' }, g0);
+  var layer = el('g', {}, svg); stage.appendChild(svg);
+
+  function len(p) { var L = 0; for (var i = 1; i < p.length; i++) L += Math.hypot(p[i][0]-p[i-1][0], p[i][1]-p[i-1][1]); return L; }
+  function at(p, d) { for (var i = 1; i < p.length; i++) { var s = Math.hypot(p[i][0]-p[i-1][0], p[i][1]-p[i-1][1]); if (d <= s) { var t = s ? d / s : 0; return [p[i-1][0]+(p[i][0]-p[i-1][0])*t, p[i-1][1]+(p[i][1]-p[i-1][1])*t]; } d -= s; } return p[p.length-1].slice(); }
+  var ease = function (t) { return t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3) / 2; };
+  function pulse(id) {
+    var c = document.querySelector('.card[data-id="' + id + '"]'); if (!c) return;
+    var x = c.offsetLeft, y = c.offsetTop, w = c.offsetWidth, h = c.offsetHeight, rx = id === 'github' ? 28 : 22;
+    var r = el('rect', { x: x, y: y, width: w, height: h, rx: rx, fill: 'none', stroke: 'var(--g-accent)', 'stroke-width': 3 }, layer), t0 = performance.now();
+    (function step(now) { var t = Math.min(1, (now - t0) / 480), g = 10 * t;
+      r.setAttribute('x', x-g); r.setAttribute('y', y-g); r.setAttribute('width', w+2*g); r.setAttribute('height', h+2*g); r.setAttribute('rx', rx+g); r.setAttribute('opacity', 1-t);
+      if (t < 1) requestAnimationFrame(step); else r.remove(); })(t0);
+  }
+  function orb(p, onArrive) {
+    var L = len(p), dur = Math.max(600, L / 0.7), g = el('g', { opacity: 0 }, layer);
+    var soft = el('polyline', { fill: 'none', stroke: 'var(--g-accent)', 'stroke-width': 8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: .28 }, g);
+    var thin = el('polyline', { fill: 'none', stroke: '#f3cdf7', 'stroke-width': 2.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: .9 }, g);
+    var halo = el('circle', { r: 15, fill: 'var(--g-accent)', opacity: .55, filter: 'url(#glow)' }, g);
+    var core = el('circle', { r: 7, fill: 'url(#core)' }, g), spark = el('circle', { r: 2.6, fill: '#ffffff' }, g);
+    var hist = [], t0 = null;
+    function step(now) {
+      if (t0 === null) t0 = now;
+      var t = Math.min(1, (now - t0) / dur), q = at(p, ease(t) * L);
+      hist.unshift(q); hist.length = Math.min(hist.length, 11);
+      g.setAttribute('opacity', Math.min(1, t * 8));
+      var fl = 1 + Math.sin(now / 38) * .12 + (Math.random() - .5) * .18;
+      halo.setAttribute('cx', q[0]); halo.setAttribute('cy', q[1]); halo.setAttribute('r', 15 * fl);
+      core.setAttribute('cx', q[0]); core.setAttribute('cy', q[1]);
+      spark.setAttribute('cx', q[0] + (Math.random() - .5) * 3); spark.setAttribute('cy', q[1] + (Math.random() - .5) * 3);
+      var pts = hist.map(function (h) { return h[0].toFixed(1) + ',' + h[1].toFixed(1); }).join(' ');
+      soft.setAttribute('points', pts); thin.setAttribute('points', pts);
+      if (t < 1) requestAnimationFrame(step); else { g.remove(); if (onArrive) onArrive(); }
+    }
+    requestAnimationFrame(step);
+  }
+  function fire(id) {
+    var flows = FLOWS[id] || [];
+    if (reduce) { if (NEXT[id]) pulse(NEXT[id]); return; }
+    var targets = id === 'merge' ? ['live', 'impact'] : [NEXT[id]];
+    flows.forEach(function (p, i) { orb(p, function () { if (targets[i]) pulse(targets[i]); }); });
+  }
+})();
+</script>
+</body>
+</html>
