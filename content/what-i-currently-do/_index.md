@@ -1,5 +1,5 @@
 ---
-title: "What I Currently Do"
+title: "What I Do"
 ---
 <style>
 /* The graphic is laid out at 1600x1200 (the size it was designed at) and
