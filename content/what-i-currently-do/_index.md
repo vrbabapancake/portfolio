@@ -26,7 +26,7 @@ title: "What I Do"
 }
 </style>
 
-I’m the Senior Technical Content Writer at PagerDuty, and a team of one for the company’s customer docs and e-learning. Click any card in the graphic to see what comes in, what I put out, and the tools that make it work.
+I’m the Senior Technical Content Writer at PagerDuty, and a team of one for the company’s customer docs and e-learning content. Click any card in the graphic to see what comes in, what I put out, and the tools that make it work.
 
 <div class="graphic-embed">
 <iframe src="graphic/" title="What I do at PagerDuty: interactive graphic" allow="fullscreen" allowfullscreen></iframe>
