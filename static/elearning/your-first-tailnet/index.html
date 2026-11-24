@@ -203,14 +203,14 @@ pre.code .c{color:var(--muted);font-style:italic}
 .step-arrow:hover:not([disabled]){background:var(--surface-2)}
 .step-arrow[disabled]{opacity:.35;cursor:not-allowed}
 .step-hint{font-size:13px;color:var(--muted);margin-left:8px}
-.usecase{display:grid;grid-template-columns:1fr 220px;gap:20px;align-items:center;background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:22px 24px;margin:0 0 16px}
+.usecase{display:grid;grid-template-columns:1fr 250px;gap:24px;align-items:center;background:var(--surface-2);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:22px 24px;margin:0 0 16px}
 .usecase h4{margin:4px 0 8px;font-size:18px;font-weight:600;color:var(--ink)}
 .usecase p{margin:0}
-.usecase svg{width:100%;height:auto}
+.usecase svg{display:block;width:100%;max-width:240px;height:auto;margin:0 auto}
 .also{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 8px}
 .also div{border:1px solid var(--hairline);border-radius:var(--r);padding:14px 16px;font-size:15px}
 .also strong{display:block;font-weight:600;color:var(--ink);margin-bottom:2px}
-@media (max-width:900px){.usecase,.also{grid-template-columns:1fr}.usecase svg{max-width:260px}}
+@media (max-width:900px){.usecase,.also{grid-template-columns:1fr}}
 /* style guide */
 .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:12px 0 8px}
 .sw{border:1px solid var(--hairline);border-radius:var(--r);overflow:hidden;background:var(--surface);font-size:13px}
@@ -282,15 +282,20 @@ table.spec th{font-weight:500;color:var(--muted);font-size:13px}
       <h4>Reach your home server from anywhere</h4>
       <p>You keep photos and files on a small server at home. You want to open them from your laptop at a café or your phone on mobile data, without opening ports on your router or running your own VPN server. That's a tailnet with three devices, and it's what you'll build here.</p>
     </div>
-    <svg viewBox="0 0 220 150" aria-hidden="true">
-      <rect x="8" y="98" width="62" height="38" rx="3" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 140 H76" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="39" y="122" text-anchor="middle" font-size="10" fill="#706e6d">café</text>
-      <rect x="160" y="92" width="30" height="50" rx="5" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M170 136 H180" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="175" y="119" text-anchor="middle" font-size="9" fill="#706e6d">LTE</text>
-      <rect x="86" y="10" width="48" height="56" rx="4" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M96 26 H124 M96 36 H124" stroke="#181717" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="110" cy="52" r="3" fill="#3b82f6"/>
-      <text x="110" y="80" text-anchor="middle" font-size="10" fill="#706e6d">home</text>
-      <path d="M58 94 Q70 56 84 44" stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="4 5" stroke-linecap="round"/>
-      <path d="M166 88 Q152 58 136 44" stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="4 5" stroke-linecap="round"/>
+    <svg viewBox="0 0 240 172" role="img" aria-label="Diagram: a laptop at a café and a phone on mobile data both connect to a home server through your tailnet">
+      <defs><marker id="ucArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#3b82f6"/></marker></defs>
+      <path d="M50 116 L104 58" stroke="#3b82f6" stroke-width="2" marker-end="url(#ucArrow)"/>
+      <path d="M190 116 L136 58" stroke="#3b82f6" stroke-width="2" marker-end="url(#ucArrow)"/>
+      <rect x="70" y="8" width="100" height="48" rx="8" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+      <text x="120" y="29" text-anchor="middle" font-size="12" font-weight="600" fill="#181717" font-family="Inter,system-ui,sans-serif">Home server</text>
+      <text x="120" y="45" text-anchor="middle" font-size="10" fill="#706e6d" font-family="Inter,system-ui,sans-serif">photos &amp; files</text>
+      <rect x="2" y="118" width="96" height="48" rx="8" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+      <text x="50" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#181717" font-family="Inter,system-ui,sans-serif">Laptop</text>
+      <text x="50" y="155" text-anchor="middle" font-size="10" fill="#706e6d" font-family="Inter,system-ui,sans-serif">at a café</text>
+      <rect x="142" y="118" width="96" height="48" rx="8" fill="#fff" stroke="#181717" stroke-width="1.5"/>
+      <text x="190" y="139" text-anchor="middle" font-size="12" font-weight="600" fill="#181717" font-family="Inter,system-ui,sans-serif">Phone</text>
+      <text x="190" y="155" text-anchor="middle" font-size="10" fill="#706e6d" font-family="Inter,system-ui,sans-serif">on mobile data</text>
+      <text x="120" y="88" text-anchor="middle" font-size="9" font-weight="600" letter-spacing=".08em" fill="#2563eb" font-family="Inter,system-ui,sans-serif">VIA YOUR</text><text x="120" y="100" text-anchor="middle" font-size="9" font-weight="600" letter-spacing=".08em" fill="#2563eb" font-family="Inter,system-ui,sans-serif">TAILNET</text>
     </svg>
   </div>
   <div class="also">
