@@ -4,106 +4,164 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Columbo at Westwood: A Grave Map</title>
+<meta name="description" content="A map of the 21 people who worked on Columbo and are buried at Westwood Village Memorial Park in Los Angeles.">
+<script>
+  (function(){
+    var t = null; try { t = localStorage.getItem('theme'); } catch(e) {}
+    if (t === 'dark' || (!t && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+  })();
+</script>
+<link rel="stylesheet" href="../css/tokens.css?v=20261124">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600;1,400&family=Figtree:wght@600;700;800;900&display=swap">
 <style>
+  /* Map colours, built on the Sketchbook tokens */
   :root{
-    --paper:#f4efe4; --ink:#2b2620; --muted:#6f665a; --line:#d8cfbd;
-    --lawn:#dfe6cf; --lawn-edge:#b9c59f; --road:#ece4d3; --bldg:#e3d9c6; --bldg-edge:#b8a98d;
-    --coat:#9a6b2f; --coat-dark:#6e4a1d; --pin-soft:#c9a46a;
+    --m-bg:#ece5db; --m-out:#e4dccf; --m-ground:#fbf8f3; --m-ground-edge:#a3949f;
+    --m-lawn:#dcebe4; --m-lawn-edge:#7fa69b; --m-garden:#eaf2ec; --m-road:#e7ddcf;
+    --m-bldg:var(--lilac-soft); --m-bldg-edge:#b48dbb;
+    --m-label:#6a5b6e; --m-halo:#fbf8f3;
+    --pin:var(--accent-strong); --pin-edge:#fff; --pin-active:var(--lilac-text);
+    --ref:#a497a8; --ref-edge:#fff; --ref-ap:#fbf8f3; --ref-ap-edge:#8d7f91;
+  }
+  html.dark{
+    --m-bg:#12202a; --m-out:#172831; --m-ground:#1b2c34; --m-ground-edge:#5d7079;
+    --m-lawn:#203d3c; --m-lawn-edge:#4b7a72; --m-garden:#1f3536; --m-road:#2a3d45;
+    --m-bldg:#352a3c; --m-bldg-edge:#7f6188;
+    --m-label:#b3a9b8; --m-halo:#1b2c34;
+    --pin:var(--accent); --pin-edge:#15232a; --pin-active:var(--lilac);
+    --ref:#857a8a; --ref-edge:#15232a; --ref-ap:#1b2c34; --ref-ap-edge:#9a8f9e;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.45}
-  header{padding:28px 32px 8px;max-width:1280px;margin:0 auto}
-  .back{display:inline-block;margin:0 0 14px;color:var(--coat-dark);font-weight:600;font-size:14px;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;background:#fff}
-  .back:hover{background:#f1e7d4}
-  h1{font-family:"Libre Baskerville",Georgia,serif;font-weight:700;font-size:30px;margin:0 0 6px;letter-spacing:-.01em}
-  .dek{color:var(--muted);margin:0;max-width:760px}
-  .dek em{font-family:"Libre Baskerville",Georgia,serif}
-  main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:24px;padding:16px 32px 32px;max-width:1280px;margin:0 auto}
-  @media (max-width:900px){main{grid-template-columns:1fr;padding:12px 16px 24px}header{padding:20px 16px 4px}}
-  .mapwrap{background:#fbf8f1;border:1px solid var(--line);border-radius:10px;padding:10px;position:relative}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);line-height:1.55;font-size:16px}
+  a{color:var(--accent-text);text-underline-offset:3px}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 16px}
+
+  .topbar{border-bottom:1.5px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;gap:12px;min-height:64px}
+  .back{font-family:var(--font-display);font-weight:800;color:var(--text);text-decoration:none;border:1.5px solid var(--line);border-radius:var(--radius-button);padding:8px 14px;background:var(--card)}
+  .back:hover{background:var(--lilac);color:var(--on-lilac)}
+  .spacer{flex:1}
+  .iconbtn{width:44px;height:44px;display:grid;place-items:center;border:1.5px solid var(--line);border-radius:var(--radius-button);background:var(--card);color:var(--text);cursor:pointer}
+  .iconbtn:hover{background:var(--lilac);color:var(--on-lilac)}
+  .iconbtn svg{width:20px;height:20px}
+  html.dark .icon-moon,html:not(.dark) .icon-sun{display:none}
+
+  header.hero{background:var(--band);color:var(--on-band);border-bottom:1.5px solid var(--line)}
+  .hero .wrap{padding-top:34px;padding-bottom:30px}
+  .hero h1{font-family:var(--font-display);font-weight:900;font-size:clamp(34px,5.6vw,60px);line-height:1.02;letter-spacing:-1.2px;margin:0 0 10px}
+  .hero p{font-size:18px;margin:0;max-width:760px}
+
+  main{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:28px;padding-top:28px;padding-bottom:12px;align-items:start}
+  @media (max-width:900px){main{grid-template-columns:1fr}}
+  .mapwrap{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:10px;position:relative}
   svg{width:100%;height:auto;display:block}
-  .legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--muted);padding:8px 6px 2px}
+  #map{border-radius:6px}
+  #map text{font-family:var(--font-display)}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-family:var(--font-display);font-weight:600;font-size:13px;color:var(--muted);padding:8px 6px 2px}
   .legend span{display:inline-flex;align-items:center;gap:6px}
-  .sw{width:12px;height:12px;border-radius:50%;display:inline-block}
-  .note{font-size:12.5px;color:var(--muted);padding:2px 6px 4px}
+  .sw{width:13px;height:13px;border-radius:50%;display:inline-block;border:1.5px solid var(--line)}
+  .note{font-size:14px;color:var(--muted);padding:2px 6px 4px;margin:6px 0 0}
   .pin{cursor:pointer}
-  .pin circle.dot{fill:var(--coat);stroke:#fff;stroke-width:3;transition:r .15s}
-  .pin.approx circle.dot{fill:#fff;stroke:var(--coat);stroke-width:4;stroke-dasharray:5 3}
-  .pin text{font-size:19px;font-weight:600;fill:var(--ink);paint-order:stroke;stroke:#f6f1e5;stroke-width:6px;stroke-linejoin:round;pointer-events:none}
-  .pin.active circle.dot{fill:var(--coat-dark)}
-  .pin.active text{fill:var(--coat-dark)}
+  .pin circle.dot{fill:var(--pin);stroke:var(--pin-edge);stroke-width:3;transition:r .15s}
+  .pin.approx circle.dot{fill:var(--m-ground);stroke:var(--pin);stroke-width:4;stroke-dasharray:5 3}
+  .pin text{font-size:19px;font-weight:800;fill:var(--text);paint-order:stroke;stroke:var(--m-halo);stroke-width:6px;stroke-linejoin:round;pointer-events:none}
+  .pin.active circle.dot{fill:var(--pin-active)}
+  .pin.approx.active circle.dot{fill:var(--lilac);stroke:var(--pin-active)}
+  .pin.active text{fill:var(--pin-active)}
   .pin:focus{outline:none}
-  .pin:focus-visible circle.dot{stroke:var(--ink)}
-  .ring{fill:none;stroke:var(--coat-dark);stroke-width:3;opacity:0}
+  .pin:focus-visible circle.dot{stroke:var(--text)}
+  .ring{fill:var(--lilac);fill-opacity:.55;stroke:var(--pin-active);stroke-width:3;opacity:0}
   .pin.active .ring{opacity:1}
-  .area-label{font-size:16px;fill:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
-  .ref{cursor:pointer}.reflabel{font-size:16px;font-style:italic;fill:#8d8371;paint-order:stroke;stroke:#f6f1e5;stroke-width:5px;stroke-linejoin:round}.ref.active .reflabel{fill:var(--ink);font-weight:600}.ref.active circle{fill:#6f665a}.toggle{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink);padding:4px 6px 0;cursor:pointer}
-  .street{font-size:16px;fill:#8d8371;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
-  aside{display:flex;flex-direction:column;gap:14px}
-  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px 18px}
-  .card h2{font-family:"Libre Baskerville",Georgia,serif;font-size:20px;margin:0 0 2px}
-  .card .role{color:var(--coat-dark);font-weight:600;font-size:13.5px;margin:0 0 10px}
-  .card dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13.5px}
-  .card dt{color:var(--muted)}
+  .area-label{font-size:16px;fill:var(--m-label);letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+  .ref{cursor:pointer}
+  .reflabel{font-size:16px;font-weight:600;fill:var(--m-label);paint-order:stroke;stroke:var(--m-halo);stroke-width:5px;stroke-linejoin:round}
+  .ref.active .reflabel{fill:var(--text);font-weight:800}
+  .ref.active circle:not(.hit){fill:var(--muted)}
+  .toggle{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--text);padding:8px 6px 0;cursor:pointer}
+  .toggle input{accent-color:var(--accent-strong);width:18px;height:18px}
+  .street{font-size:16px;fill:var(--m-label);letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+  aside{display:flex;flex-direction:column;gap:22px}
+  .card{background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+  #detail{box-shadow:var(--shadow)}
+  .card h2{font-family:var(--font-display);font-weight:900;font-size:24px;line-height:1.12;letter-spacing:-.3px;margin:0 0 4px}
+  .card .role{font-family:var(--font-display);color:var(--lilac-text);font-weight:800;font-size:14.5px;margin:0 0 12px}
+  .card dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:15px}
+  .card dt{font-family:var(--font-display);font-weight:800;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding-top:3px}
   .card dd{margin:0}
-  .card a{color:var(--coat-dark)}
   .card .empty{color:var(--muted);font-style:italic;margin:0}
-  .list h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:16px 0 6px;font-weight:600}
+  .list h3{font-family:var(--font-display);font-size:13px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:18px 0 6px;font-weight:800}
   .list h3:first-child{margin-top:0}
   .list ul{list-style:none;margin:0;padding:0}
-  .list li button{all:unset;box-sizing:border-box;width:100%;display:flex;justify-content:space-between;gap:10px;padding:7px 8px;border-radius:6px;cursor:pointer;font-size:14px}
-  .list li button:hover,.list li button.active{background:#f1e7d4}
-  .list li button:focus-visible{outline:2px solid var(--coat)}
-  .list .ep{color:var(--muted);font-size:12.5px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
-  .count{font-family:"Libre Baskerville",Georgia,serif;font-size:13px;color:var(--muted)}
-  footer{max-width:1280px;margin:0 auto;padding:0 32px 36px;font-size:12.5px;color:var(--muted)}
+  .list li button{all:unset;box-sizing:border-box;width:100%;display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:7px 9px;border:1.5px solid transparent;border-radius:var(--radius-button);cursor:pointer;font-family:var(--font-display);font-weight:700;font-size:15px;color:var(--text)}
+  .list li button:hover{background:var(--lilac-soft);color:var(--on-lilac)}
+  .list li button.active{background:var(--lilac);color:var(--on-lilac);border-color:var(--line)}
+  .list li button:hover .ep,.list li button.active .ep{color:var(--on-lilac)}
+  .list li button:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+  .list .ep{font-family:var(--font-body);font-weight:400;color:var(--muted);font-size:13px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
+  .count{color:var(--muted)}
+  footer{border-top:1.5px solid var(--line);margin-top:32px;padding-top:20px;padding-bottom:32px;font-size:14px;color:var(--muted)}
   footer a{color:var(--muted)}
   /* ---------- Phones: zoomable map, bigger taps, details sheet at the bottom ---------- */
   .zoombar{display:none}
   @media (max-width:700px){
-    h1{font-size:24px}
-    .dek{font-size:14px}
-    .mapwrap{padding:6px}
-    #map{height:62vh;touch-action:none;cursor:grab;background:#efe9dc;border-radius:6px}
+    .hero .wrap{padding-top:24px;padding-bottom:22px}
+    .hero p{font-size:16px}
+    main{padding-top:20px}
+    .mapwrap{padding:6px;box-shadow:6px 6px 0 var(--lilac)}
+    #map{height:62vh;touch-action:none;cursor:grab;background:var(--m-bg)}
     #map.dragging{cursor:grabbing}
     .zoombar{display:flex;gap:6px;position:absolute;right:14px;top:14px;z-index:2}
-    .zoombar button{all:unset;box-sizing:border-box;min-width:40px;height:40px;padding:0 10px;display:grid;place-items:center;background:#fff;border:1px solid var(--line);border-radius:8px;font:600 18px Inter,system-ui,sans-serif;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
-    .zoombar button.fit{font-size:13px}
-    .zoombar button:active{background:#f1e7d4}
-    .legend{gap:10px;font-size:12px}
-    .note{font-size:12px}
+    .zoombar button{all:unset;box-sizing:border-box;min-width:42px;height:42px;padding:0 10px;display:grid;place-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:var(--radius-button);font:800 18px var(--font-display);color:var(--text)}
+    .zoombar button.fit{font-size:14px}
+    .zoombar button:active{background:var(--lilac);color:var(--on-lilac)}
+    .legend{gap:8px 12px;font-size:12.5px}
+    .note{font-size:13px}
     /* details become a sheet fixed to the bottom of the screen */
-    #detail{position:fixed;left:8px;right:8px;bottom:8px;z-index:20;max-height:44vh;overflow:auto;box-shadow:0 -4px 18px rgba(43,38,32,.18);padding:12px 16px 14px}
+    #detail{position:fixed;left:8px;right:8px;bottom:8px;z-index:20;max-height:44vh;overflow:auto;box-shadow:0 -6px 0 var(--lilac);padding:12px 16px 14px}
     #detail .sheet-head{display:flex;align-items:flex-start;gap:10px}
-    #detail .sheet-head h2{flex:1;font-size:18px}
-    #detail .sheet-toggle{all:unset;cursor:pointer;width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;font-size:16px;color:var(--muted);flex:none}
+    #detail .sheet-head h2{flex:1;font-size:20px}
+    #detail .sheet-toggle{all:unset;cursor:pointer;width:36px;height:36px;display:grid;place-items:center;border:1.5px solid var(--line);border-radius:var(--radius-button);font-size:16px;color:var(--text);background:var(--card);flex:none}
     #detail.collapsed dl{display:none}
     #detail.collapsed .role{margin-bottom:0}
     body{padding-bottom:46vh}
     body.sheet-collapsed{padding-bottom:110px}
-    .list li button{padding:11px 8px;font-size:15px}
+    .list li button{padding:11px 9px;font-size:15.5px}
   }
 </style>
 </head>
 <body>
-<header>
-  <a class="back" href="../programming/">← Programming</a>
-  <h1>Columbo at Westwood</h1>
-  <p class="dek">21 people who worked on <em>Columbo</em> are buried or inurned at Pierce Brothers Westwood Village Memorial Park in Los Angeles. Grounds are traced from an aerial view. Pins come from published grave coordinates, lined up with graves you can see in that view.</p>
+<div class="topbar">
+  <div class="wrap">
+    <a class="back" href="../programming/">← Programming</a>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="theme" type="button" aria-label="Dark mode" aria-pressed="false" title="Toggle dark mode">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Columbo at Westwood</h1>
+    <p>21 people who worked on <em>Columbo</em> are buried or inurned at Pierce Brothers Westwood Village Memorial Park in Los Angeles. Grounds are traced from an aerial view. Pins come from published grave coordinates, lined up with graves you can see in that view.</p>
+  </div>
 </header>
 
-<main>
+<main class="wrap">
   <section class="mapwrap" aria-label="Cemetery map">
     <div class="zoombar" aria-label="Map zoom"><button type="button" data-zoom="in" aria-label="Zoom in">+</button><button type="button" data-zoom="out" aria-label="Zoom out">−</button><button type="button" class="fit" data-zoom="fit">Fit</button></div>
     <svg id="map" viewBox="95 0 1489 1060" role="img" aria-label="Schematic map of Westwood Village Memorial Park with Columbo-related graves"></svg>
     <label class="toggle"><input type="checkbox" id="toggleRefs" checked> Show other famous graves (19)</label>
     <div class="legend">
-      <span><i class="sw" style="background:var(--coat)"></i>Grave at published GPS point</span>
-      <span><i class="sw" style="background:#fff;border:2px dashed var(--coat)"></i>Position estimated</span><span><i class="sw" style="background:#b5ab99"></i>Other famous graves (dashed = approximate)</span>
-      <span><i class="sw" style="background:var(--lawn);border:1px solid var(--lawn-edge)"></i>Lawn</span>
-      <span><i class="sw" style="background:var(--bldg);border:1px solid var(--bldg-edge);border-radius:2px"></i>Building or garden (approximate)</span>
+      <span><i class="sw" style="background:var(--pin)"></i>Grave at published GPS point</span>
+      <span><i class="sw" style="background:var(--m-ground);border:2px dashed var(--pin)"></i>Position estimated</span><span><i class="sw" style="background:var(--ref)"></i>Other famous graves (dashed = approximate)</span>
+      <span><i class="sw" style="background:var(--m-lawn);border-color:var(--m-lawn-edge)"></i>Lawn</span>
+      <span><i class="sw" style="background:var(--m-bldg);border-color:var(--m-bldg-edge);border-radius:3px"></i>Building or garden (approximate)</span>
     </div>
     <p class="note">North is up. Pin coordinates come from Find a Grave, The Tombstone Tourist and Waymarking. Lined up with the aerial view, reference graves match to within about 4 m. Click a pin or a name to see details.</p>
   </section>
@@ -116,7 +174,7 @@
   </aside>
 </main>
 
-<footer>
+<footer class="wrap">
   Sources: Find a Grave memorial pages for each person's plot and GPS; The Tombstone Tourist (Falk, Albert, Ayres); Waymarking (Anderson); Celebrity Graveland (Loggia, Dean Martin); an IMDb Westwood list (Averback); Seeing Stars and Lonely Planet (Marilyn Monroe, Natalie Wood). Some reference graves are placed by eye from the same aerial view. Episode credits are from Wikipedia, IMDb and TV episode guides. Grounds traced from a Google Maps aerial view; building names are approximate. The office staff can help you find a specific grave.
 </footer>
 
@@ -157,34 +215,34 @@ function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const
 function txt(s,attrs,parent){const t=el("text",attrs,parent);t.textContent=s;return t;}
 const poly=(pts,attrs)=>el("polygon",Object.assign({points:pts},attrs));
 
-el("rect",{x:0,y:0,width:1584,height:1060,fill:"#efe9dc"});
+el("rect",{x:0,y:0,width:1584,height:1060,fill:"var(--m-bg)"});
 // surroundings
-poly("0,0 1000,0 600,150 190,165 0,230",{fill:"#e6e0d2"});
+poly("0,0 1000,0 600,150 190,165 0,230",{fill:"var(--m-out)"});
 txt("Parking",{x:640,y:70,class:"area-label","text-anchor":"middle"});
 txt("Ashton Ave",{x:1500,y:215,class:"street","text-anchor":"middle",transform:"rotate(-20 1500 215)"});
 txt("To Wilshire Blvd ↑",{x:260,y:40,class:"street"});
-el("path",{d:"M95,780 L320,740",stroke:"var(--road)","stroke-width":30,fill:"none"});
+el("path",{d:"M95,780 L320,740",stroke:"var(--m-road)","stroke-width":30,fill:"none"});
 txt("← Glendon entrance",{x:110,y:820,class:"street"});
 txt("↑ Glendon Ave (west side)",{x:140,y:520,class:"street",transform:"rotate(-90 140 520)","text-anchor":"middle"});
 txt("Wellworth Ave (south) ↓",{x:1150,y:1045,class:"street","text-anchor":"middle"});
 // grounds outline
-poly("190,165 600,150 1000,40 1120,40 1400,520 1450,620 1440,760 1230,800 840,900 600,1000 330,800 250,700 200,360",{fill:"#f6f1e5",stroke:"#cfc4ad","stroke-width":2});
+poly("190,165 600,150 1000,40 1120,40 1400,520 1450,620 1440,760 1230,800 840,900 600,1000 330,800 250,700 200,360",{fill:"var(--m-ground)",stroke:"var(--m-ground-edge)","stroke-width":2});
 // NW garden
-poly("195,170 330,125 420,110 470,150 590,235 265,365 215,350",{fill:"var(--lawn)",stroke:"var(--lawn-edge)","stroke-width":1.5});
+poly("195,170 330,125 420,110 470,150 590,235 265,365 215,350",{fill:"var(--m-lawn)",stroke:"var(--m-lawn-edge)","stroke-width":1.5});
 // loop road
-el("path",{d:"M270,385 L600,245 L1000,165 Q1100,150 1130,240 L1180,560 Q1185,595 1150,605 L570,760 Q530,770 480,760 L320,735 Q280,725 280,690 Z",fill:"none",stroke:"var(--road)","stroke-width":30,"stroke-linejoin":"round"});
+el("path",{d:"M270,385 L600,245 L1000,165 Q1100,150 1130,240 L1180,560 Q1185,595 1150,605 L570,760 Q530,770 480,760 L320,735 Q280,725 280,690 Z",fill:"none",stroke:"var(--m-road)","stroke-width":30,"stroke-linejoin":"round"});
 // central lawn
-poly("300,410 610,275 1000,190 1095,215 1110,260 1155,545 1135,580 575,735 330,705 305,680",{fill:"var(--lawn)",stroke:"var(--lawn-edge)","stroke-width":1.5});
+poly("300,410 610,275 1000,190 1095,215 1110,260 1155,545 1135,580 575,735 330,705 305,680",{fill:"var(--m-lawn)",stroke:"var(--m-lawn-edge)","stroke-width":1.5});
 txt("Section D · central lawn",{x:760,y:600,class:"area-label","text-anchor":"middle",transform:"rotate(-15 760 600)"});
 // buildings & gardens (approximate)
-const bstyle={fill:"var(--bldg)",stroke:"var(--bldg-edge)","stroke-width":1.5};
+const bstyle={fill:"var(--m-bldg)",stroke:"var(--m-bldg-edge)","stroke-width":1.5};
 poly("600,160 925,95 945,175 620,250",bstyle);
 txt("Mausoleum",{x:772,y:180,class:"area-label","text-anchor":"middle",transform:"rotate(-11 772 180)"});
 poly("1040,110 1110,70 1385,555 1320,600",bstyle);
 txt("Mausoleums & sanctuaries",{x:1215,y:330,class:"area-label","text-anchor":"middle",transform:"rotate(61 1215 330)"});
-poly("780,745 1170,630 1200,780 840,880",{fill:"#e8ead8",stroke:"var(--lawn-edge)","stroke-dasharray":"5 4"});
+poly("780,745 1170,630 1200,780 840,880",{fill:"var(--m-garden)",stroke:"var(--m-lawn-edge)","stroke-dasharray":"5 4"});
 txt("Chapel Garden Estate",{x:1075,y:770,class:"area-label","text-anchor":"middle",transform:"rotate(-15 1075 770)"});
-poly("1190,610 1300,575 1430,640 1420,745 1215,775",{fill:"#e8ead8",stroke:"var(--lawn-edge)","stroke-dasharray":"5 4"});
+poly("1190,610 1300,575 1430,640 1420,745 1215,775",{fill:"var(--m-garden)",stroke:"var(--m-lawn-edge)","stroke-dasharray":"5 4"});
 txt("Garden of Serenity",{x:1320,y:700,class:"area-label","text-anchor":"middle"});
 poly("600,860 810,830 830,960 620,990",bstyle);
 txt("Chapel (approx.)",{x:715,y:915,class:"area-label","text-anchor":"middle"});
@@ -215,7 +273,7 @@ const refLayer=el("g",{id:"refs"});
 const refEls={};
 REFS.forEach((r,i)=>{
   const g=el("g",{class:"ref",tabindex:0,role:"button","aria-label":r.n},refLayer);
-  el("circle",{cx:r.x,cy:r.y,r:7,fill:r.ap?"#f6f1e5":"#b5ab99",stroke:r.ap?"#9f957f":"#fff","stroke-width":r.ap?2.5:2,"stroke-dasharray":r.ap?"3 2":"none"},g);
+  el("circle",{cx:r.x,cy:r.y,r:7,fill:r.ap?"var(--ref-ap)":"var(--ref)",stroke:r.ap?"var(--ref-ap-edge)":"var(--ref-edge)","stroke-width":r.ap?2.5:2,"stroke-dasharray":r.ap?"3 2":"none"},g);
   txt(r.n,{x:r.x+(r.a==="end"?-12:12),y:r.y+5+(r.dy||0),"text-anchor":r.a,class:"reflabel"},g);
   g.addEventListener("click",()=>selectRef(i));
   g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();selectRef(i);}});
@@ -224,9 +282,9 @@ REFS.forEach((r,i)=>{
 
 // compass + scale bar (20 m ≈ 194 px)
 const cg=el("g",{transform:"translate(1500 950)"});
-el("circle",{cx:0,cy:0,r:26,fill:"#fff",stroke:"var(--line)"},cg);
-el("path",{d:"M0,-19 L8,6 L0,2 L-8,6 Z",fill:"var(--coat-dark)"},cg);
-txt("N",{x:0,y:-32,"text-anchor":"middle","font-size":17,"font-weight":600,fill:"var(--muted)"},cg);
+el("circle",{cx:0,cy:0,r:26,fill:"var(--card)",stroke:"var(--line)","stroke-width":1.5},cg);
+el("path",{d:"M0,-19 L8,6 L0,2 L-8,6 Z",fill:"var(--pin)"},cg);
+txt("N",{x:0,y:-32,"text-anchor":"middle","font-size":17,"font-weight":800,fill:"var(--muted)"},cg);
 const sb=el("g",{transform:"translate(1200 1010)"});
 el("line",{x1:0,y1:0,x2:194,y2:0,stroke:"var(--muted)","stroke-width":3},sb);
 el("line",{x1:0,y1:-7,x2:0,y2:7,stroke:"var(--muted)","stroke-width":3},sb);
@@ -290,10 +348,16 @@ function selectRef(i){
   Object.values(btns).forEach(b=>b.classList.remove("active"));
   Object.values(refEls).forEach(g=>g.classList.remove("active"));
   refEls[i].classList.add("active");
-  detail.innerHTML='<h2>'+r.n+'</h2><p class="role" style="color:var(--muted)">'+r.k+' · not in Columbo, shown for reference</p><dl><dt>Where</dt><dd>'+r.w+'</dd></dl>';
+  detail.innerHTML='<h2>'+r.n+'</h2><p class="role">'+r.k+' · not in Columbo, shown for reference</p><dl><dt>Where</dt><dd>'+r.w+'</dd></dl>';
 }
 document.getElementById("toggleRefs").addEventListener("change",e=>{document.getElementById("refs").style.display=e.target.checked?"":"none";});
 select("falk");
+(function(){
+  const themeBtn=document.getElementById("theme");
+  const sync=()=>themeBtn.setAttribute("aria-pressed",document.documentElement.classList.contains("dark")?"true":"false");
+  themeBtn.addEventListener("click",()=>{const dark=document.documentElement.classList.toggle("dark");try{localStorage.setItem("theme",dark?"dark":"light");}catch(e){}sync();});
+  sync();
+})();
 </script>
 <script>
 // ---------- Phone mode: pinch/drag zoom, zoom buttons, details sheet, bigger taps ----------
