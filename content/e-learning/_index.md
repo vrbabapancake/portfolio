@@ -21,14 +21,14 @@ title: "e-Learning"
 .course-thumb:hover { transform: translate(-3px, -3px); box-shadow: var(--shadow-hover); }
 .course-thumb img { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; }
 .course-card p { margin-top: 0; }
-.course-open {
+.lead a.course-open, a.course-open {
   display: inline-flex; align-items: center; gap: 10px; padding: 12px 24px; margin-top: 4px;
   background: var(--accent-strong); color: #fff; font-family: var(--font-display);
   font-weight: 800; font-size: 16px; border: 1.5px solid var(--line);
   border-radius: var(--radius-button); text-decoration: none;
   transition: transform .12s ease, box-shadow .12s ease;
 }
-.course-open:hover { background: var(--accent-strong-hover); color: #fff; transform: translate(-3px, -3px); box-shadow: var(--shadow-hover); }
+.lead a.course-open:hover, a.course-open:hover { background: var(--accent-strong-hover); color: #fff; transform: translate(-3px, -3px); box-shadow: var(--shadow-hover); }
 @media (max-width: 640px) {
   .course-card { grid-template-columns: 1fr; gap: 14px; }
 }
