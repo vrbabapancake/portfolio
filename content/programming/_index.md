@@ -33,7 +33,23 @@ In **6Clues**, each movie is revealed over six clues, hardest first. The earlier
   transition: transform .12s ease, box-shadow .12s ease;
 }
 .game-buttons a:hover { background: var(--accent-strong-hover); transform: translate(-3px, -3px); box-shadow: var(--shadow-hover); }
+.app-shot { margin: 8px 0 24px; }
+.app-shot img { display: block; width: 100%; height: auto; border: 1.5px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
 </style>
+
+### PagerDuty Open Incidents
+
+<figure class="app-shot">
+  <img src="pagerduty-incidents.png" alt="The Open incidents app: a teal header, four summary cards showing 4 open, 2 triggered, 2 acknowledged and 2 high-urgency incidents, and a list of incidents sorted most urgent first, each with a status badge, title, service and age." width="1350" height="1290" loading="lazy">
+</figure>
+
+My first TypeScript project. It's a small Next.js app that lists open PagerDuty incidents: summary cards at the top, then every incident sorted so the most urgent work is first. It runs in demo mode with sample data, so you can try it without a PagerDuty account.
+
+I built it to learn the stack behind modern docs sites. It calls the PagerDuty REST API from the server so the API key never reaches the browser, has unit tests, and builds and tests itself on GitHub every time I push a change. It's styled with this site's own design system.
+
+<div class="game-buttons">
+  <a href="https://github.com/vrbabapancake/typescript" target="_blank" rel="noopener noreferrer">See the code on GitHub ↗</a>
+</div>
 
 ### Columbo Episode Wheel
 
